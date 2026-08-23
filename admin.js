@@ -158,6 +158,8 @@ let catalog = [];
 let editingId = null;
 let currentConfig = { ...DEFAULT_CATALOG[0].config };
 let currentArtworkData = null;
+let loadedBgImage = new Image();
+loadedBgImage.crossOrigin = "anonymous";
 
 // Gyro Simulation Coordinates
 let mouseRoll = 0;
@@ -232,16 +234,16 @@ function initUI() {
         });
     });
 
-    // File Upload / Dropzone
+    // File Upload / Dropzone & URL input
     const dropzone = document.getElementById("dropzone");
     const fileInput = document.getElementById("input-file");
     const browseBtn = document.getElementById("btn-browse-file");
     const removeBtn = document.getElementById("btn-remove-img");
-    const dropLabel = document.getElementById("dropzone-label");
+    const urlInput = document.getElementById("input-image-url");
 
     browseBtn.addEventListener("click", () => fileInput.click());
     dropzone.addEventListener("click", (e) => {
-        if (e.target !== removeBtn) fileInput.click();
+        if (e.target !== removeBtn && e.target !== browseBtn) fileInput.click();
     });
 
     fileInput.addEventListener("change", (e) => {
@@ -249,12 +251,20 @@ function initUI() {
         if (file) handleImageFile(file);
     });
 
+    if (urlInput) {
+        urlInput.addEventListener("input", (e) => {
+            const val = e.target.value.trim();
+            if (val) {
+                setArtworkSource(val, "Direct URL");
+            } else {
+                clearArtwork();
+            }
+        });
+    }
+
     removeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        currentArtworkData = null;
-        fileInput.value = "";
-        dropLabel.textContent = "Click or drag portrait artwork here";
-        removeBtn.style.display = "none";
+        clearArtwork();
     });
 
     // Form Submit (Save to Catalog)
@@ -464,12 +474,56 @@ async function syncToCloudDatabase() {
     }
 }
 
+function setArtworkSource(src, labelText = "Artwork Loaded") {
+    currentArtworkData = src;
+    loadedBgImage.src = src;
+    const urlInput = document.getElementById("input-image-url");
+    if (urlInput && urlInput.value !== src && (src.startsWith("http://") || src.startsWith("https://"))) {
+        urlInput.value = src;
+    }
+    document.getElementById("dropzone-label").textContent = `✓ ${labelText}`;
+    document.getElementById("btn-remove-img").style.display = "inline-block";
+}
+
+function clearArtwork() {
+    currentArtworkData = null;
+    loadedBgImage.src = "";
+    const fileInput = document.getElementById("input-file");
+    if (fileInput) fileInput.value = "";
+    const urlInput = document.getElementById("input-image-url");
+    if (urlInput) urlInput.value = "";
+    document.getElementById("dropzone-label").textContent = "Click or drag portrait artwork here";
+    document.getElementById("btn-remove-img").style.display = "none";
+}
+
 function handleImageFile(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
-        currentArtworkData = event.target.result;
-        document.getElementById("dropzone-label").textContent = `✓ ${file.name} loaded`;
-        document.getElementById("btn-remove-img").style.display = "inline-block";
+        const rawData = event.target.result;
+        // Compress image using offscreen canvas to keep catalog lightweight
+        const img = new Image();
+        img.onload = () => {
+            const maxDim = 1200;
+            let targetW = img.width;
+            let targetH = img.height;
+            if (targetW > maxDim || targetH > maxDim) {
+                if (targetW > targetH) {
+                    targetH = Math.round((targetH * maxDim) / targetW);
+                    targetW = maxDim;
+                } else {
+                    targetW = Math.round((targetW * maxDim) / targetH);
+                    targetH = maxDim;
+                }
+            }
+            const offscreen = document.createElement("canvas");
+            offscreen.width = targetW;
+            offscreen.height = targetH;
+            const offCtx = offscreen.getContext("2d");
+            offCtx.drawImage(img, 0, 0, targetW, targetH);
+            const compressedData = offscreen.toDataURL("image/jpeg", 0.85);
+            setArtworkSource(compressedData, file.name);
+        };
+        img.src = rawData;
     };
     reader.readAsDataURL(file);
 }
@@ -509,6 +563,7 @@ function buildItemFromForm() {
         title: title,
         category: category,
         type: "CUSTOM_PHOTO_MOTION",
+        author: "StrawHats Studios",
         description: desc,
         resolution: "4K Ultra HD",
         tags: [category, currentConfig.particleEffectType],
@@ -535,9 +590,7 @@ function resetForm() {
     editingId = null;
     document.getElementById("wallpaper-form").reset();
     document.getElementById("mode-badge").textContent = "Creating New Wallpaper";
-    document.getElementById("dropzone-label").textContent = "Click or drag portrait artwork here";
-    document.getElementById("btn-remove-img").style.display = "none";
-    currentArtworkData = null;
+    clearArtwork();
 }
 
 function renderCatalogTable() {
@@ -587,6 +640,13 @@ function loadItemIntoEditor(item) {
     document.getElementById("input-title").value = item.title;
     document.getElementById("input-category").value = item.category || "SEASONS";
     document.getElementById("input-desc").value = item.description || "";
+
+    const artwork = item.photoUriString || item.photoDataUri;
+    if (artwork) {
+        setArtworkSource(artwork, item.title);
+    } else {
+        clearArtwork();
+    }
 
     if (item.config) {
         currentConfig = { ...item.config };
@@ -679,12 +739,30 @@ function initCanvasEngine() {
         ctx.fillRect(0, 0, w, h);
 
         // Draw Background Image if loaded
-        if (currentArtworkData) {
-            // Draw Parallax Photo
-            const imgOffset = mouseRoll * parallax * 15;
+        if (loadedBgImage && loadedBgImage.complete && loadedBgImage.naturalWidth > 0) {
             ctx.save();
-            ctx.fillStyle = "rgba(0, 242, 254, 0.15)";
-            ctx.fillRect(20 + imgOffset, 40, w - 40, h - 80);
+            const imgAspect = loadedBgImage.naturalWidth / loadedBgImage.naturalHeight;
+            const canvasAspect = w / h;
+            let dw = w, dh = h;
+            if (imgAspect > canvasAspect) {
+                dh = h;
+                dw = h * imgAspect;
+            } else {
+                dw = w;
+                dh = w / imgAspect;
+            }
+            // Parallax scaling
+            const scale = 1.15;
+            const renderW = dw * scale;
+            const renderH = dh * scale;
+            const ox = (w - renderW) / 2 + (mouseRoll * parallax * 25);
+            const oy = (h - renderH) / 2 + (mousePitch * parallax * 25);
+
+            ctx.drawImage(loadedBgImage, ox, oy, renderW, renderH);
+
+            // Subtle dark cinematic vignette overlay
+            ctx.fillStyle = "rgba(7, 9, 14, 0.4)";
+            ctx.fillRect(0, 0, w, h);
             ctx.restore();
         }
 

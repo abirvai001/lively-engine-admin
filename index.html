@@ -114,9 +114,14 @@
                         <div class="dropzone-content">
                             <span class="dropzone-icon">🖼️</span>
                             <span class="dropzone-text" id="dropzone-label">Click or drag portrait artwork here</span>
-                            <button type="button" class="btn btn-sm" id="btn-browse-file">Browse File</button>
-                            <button type="button" class="btn btn-sm btn-danger" id="btn-remove-img" style="display: none;">Remove</button>
+                            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
+                                <button type="button" class="btn btn-sm" id="btn-browse-file">Browse Image</button>
+                                <button type="button" class="btn btn-sm btn-danger" id="btn-remove-img" style="display: none;">Remove</button>
+                            </div>
                         </div>
+                    </div>
+                    <div style="margin-top: 8px;">
+                        <input type="url" id="input-image-url" class="form-input" placeholder="Or paste direct image URL (e.g. https://.../wallpaper.jpg)">
                     </div>
                 </div>
 
