@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lively Engine Admin - StrawHats Studios</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="admin-header">
+        <div class="brand-group">
+            <div class="brand-badge">⚡</div>
+            <div class="brand-text">
+                <span class="brand-title">Lively <span class="neon-cyan">Engine</span></span>
+                <span class="brand-subtitle">by StrawHats Studios • ss.lively.engine</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn btn-secondary" id="btn-cloud-config">
+                <span class="btn-icon">⚡</span> Cloud Database Sync
+            </button>
+            <button class="btn btn-secondary" id="btn-free-tier-setup">
+                <span class="btn-icon">📖</span> Database Setup Guide
+            </button>
+            <button class="btn btn-secondary" id="btn-import-json">
+                <span class="btn-icon">📥</span> Import JSON
+            </button>
+            <button class="btn btn-primary" id="btn-export-catalog">
+                <span class="btn-icon">🚀</span> Download catalog.json
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="admin-workspace">
+        <!-- Left: Live Interactive Canvas Simulator -->
+        <section class="preview-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="status-dot"></span> Live 3D Particle Simulator
+                </div>
+                <div class="badge-fps" id="fps-counter">60 FPS LIVE</div>
+            </div>
+
+            <div class="canvas-container" id="canvas-container">
+                <canvas id="motion-canvas" width="380" height="680"></canvas>
+                <div class="canvas-overlay">
+                    <div class="wallpaper-info-chip">
+                        <h3 id="preview-title">Spring Sakura Blossom</h3>
+                        <p id="preview-category">🌸 Four Seasons • 4K HDR</p>
+                    </div>
+                    <div class="gyro-tip">Move mouse inside canvas to test 3D Gyro Tilt</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right: Wallpaper Preset Builder -->
+        <section class="editor-panel">
+            <div class="panel-header">
+                <div class="panel-title">⚙️ Preset Configuration</div>
+                <div class="editor-mode-badge" id="mode-badge">Creating New Wallpaper</div>
+            </div>
+
+            <form id="wallpaper-form" class="editor-form">
+                <!-- Basic Metadata -->
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label for="input-title">Wallpaper Title</label>
+                        <input type="text" id="input-title" placeholder="e.g. Monsoon Thunder Tempest" required value="Spring Sakura Blossom">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="input-category">Category</label>
+                        <select id="input-category">
+                            <option value="SEASONS">🌸 Four Seasons</option>
+                            <option value="WEATHER">🌧️ Real Weather</option>
+                            <option value="MIST">🌫️ Fog & Smoke</option>
+                            <option value="COSMIC">🌌 Cosmic & Space</option>
+                            <option value="FLUID">💧 Fluid & Energy</option>
+                            <option value="CUSTOM">✨ Exclusive Custom</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="input-desc">Description</label>
+                    <input type="text" id="input-desc" placeholder="Describe the motion and atmosphere..." value="Delicate sakura cherry blossom petals fluttering gracefully with 3D wind aerodynamics.">
+                </div>
+
+                <!-- Particle Physics Selection -->
+                <div class="form-group">
+                    <label>Real-World Particle Engine</label>
+                    <div class="particle-grid" id="particle-selector">
+                        <button type="button" class="particle-chip active" data-effect="SPRING_SAKURA">🌸 Spring Sakura</button>
+                        <button type="button" class="particle-chip" data-effect="SUMMER_FIREFLIES">☀️ Summer Fireflies</button>
+                        <button type="button" class="particle-chip" data-effect="AUTUMN_LEAVES">🍁 Autumn Foliage</button>
+                        <button type="button" class="particle-chip" data-effect="WINTER_SNOW">❄️ Winter Snow</button>
+                        <button type="button" class="particle-chip" data-effect="MONSOON_RAIN">🌧️ Monsoon Rain</button>
+                        <button type="button" class="particle-chip" data-effect="THUNDER_LIGHTNING">⚡ Lightning Storm</button>
+                        <button type="button" class="particle-chip" data-effect="DENSE_ROLLING_FOG">🌫️ Rolling Fog</button>
+                        <button type="button" class="particle-chip" data-effect="MYSTIC_BILLOWING_SMOKE">💨 Mystic Smoke</button>
+                        <button type="button" class="particle-chip" data-effect="COSMIC_STARLIGHT">✨ Astral Starlight</button>
+                        <button type="button" class="particle-chip" data-effect="COSMIC_NEBULA">🌌 Nebula Pulsar</button>
+                    </div>
+                </div>
+
+                <!-- Background Image Upload / URL -->
+                <div class="form-group">
+                    <label>Background Artwork (Optional 3D Parallax Layer)</label>
+                    <div class="upload-dropzone" id="dropzone">
+                        <input type="file" id="input-file" accept="image/*" style="display: none;">
+                        <div class="dropzone-content">
+                            <span class="dropzone-icon">🖼️</span>
+                            <span class="dropzone-text" id="dropzone-label">Click or drag portrait artwork here</span>
+                            <button type="button" class="btn btn-sm" id="btn-browse-file">Browse File</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btn-remove-img" style="display: none;">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Physics Tuning -->
+                <div class="physics-grid">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Flow Speed</span>
+                            <span class="val-label" id="val-speed">0.9x</span>
+                        </div>
+                        <input type="range" id="input-speed" min="0.4" max="2.5" step="0.05" value="0.9">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Particle Density</span>
+                            <span class="val-label" id="val-density">1.1x</span>
+                        </div>
+                        <input type="range" id="input-density" min="0.4" max="2.0" step="0.05" value="1.1">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>3D Gyro Parallax</span>
+                            <span class="val-label" id="val-parallax">1.2x</span>
+                        </div>
+                        <input type="range" id="input-parallax" min="0.5" max="2.5" step="0.05" value="1.2">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Glow Aura</span>
+                            <span class="val-label" id="val-glow">1.1x</span>
+                        </div>
+                        <input type="range" id="input-glow" min="0.5" max="2.0" step="0.05" value="1.1">
+                    </div>
+                </div>
+
+                <!-- Color Palette -->
+                <div class="colors-row">
+                    <div class="color-picker-group">
+                        <label>Primary Glow</label>
+                        <input type="color" id="input-color-pri" value="#FFB7C5">
+                    </div>
+                    <div class="color-picker-group">
+                        <label>Secondary</label>
+                        <input type="color" id="input-color-sec" value="#FF8DA1">
+                    </div>
+                    <div class="color-picker-group">
+                        <label>Accent Aura</label>
+                        <input type="color" id="input-color-acc" value="#FF4081">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary flex-1" id="btn-save-preset">
+                        💾 Save to Catalog
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btn-export-single">
+                        📤 Export .motion File
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btn-reset-form">
+                        🔄 Reset
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Preset Catalog Library Table -->
+    <section class="catalog-section">
+        <div class="catalog-header">
+            <div class="section-title">
+                <h2>📚 Published Wallpapers Catalog</h2>
+                <p>Manage, preview, edit, or batch deploy wallpapers to Lively Engine.</p>
+            </div>
+            <div class="catalog-controls">
+                <input type="text" id="catalog-search" placeholder="Search catalog..." class="search-input">
+                <button class="btn btn-secondary" id="btn-push-cloud">⚡ Push to Cloud DB</button>
+            </div>
+        </div>
+
+        <div class="catalog-table-container">
+            <table class="catalog-table">
+                <thead>
+                    <tr>
+                        <th>Preview</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Effect Engine</th>
+                        <th>Speed / Density</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="catalog-table-body">
+                    <!-- Dynamic Rows Populated by admin.js -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Cloud Database Configuration Modal -->
+    <div class="modal-backdrop" id="modal-cloud-config" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>⚡ Cloud Database Configuration (Free Tier)</h3>
+                <button class="btn-close" id="btn-close-cloud-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Database Provider</label>
+                    <select id="cloud-provider">
+                        <option value="github">GitHub RAW Repository (Recommended, 100% Free)</option>
+                        <option value="supabase">Supabase Free Tier (PostgreSQL / REST)</option>
+                        <option value="jsonbin">JSONBin.io Free Storage</option>
+                    </select>
+                </div>
+
+                <div id="config-fields-github">
+                    <div class="form-group">
+                        <label>GitHub Repository (e.g. <code>StrawHatsStudios/lively-engine-wallpapers</code>)</label>
+                        <input type="text" id="gh-repo" placeholder="owner/repo">
+                    </div>
+                    <div class="form-group">
+                        <label>Branch & File Path</label>
+                        <input type="text" id="gh-path" value="main/catalog.json">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub Personal Access Token (for 1-click publishing)</label>
+                        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
+                    </div>
+                </div>
+
+                <div id="config-fields-supabase" style="display: none;">
+                    <div class="form-group">
+                        <label>Supabase Project URL</label>
+                        <input type="text" id="sb-url" placeholder="https://xyzcompany.supabase.co">
+                    </div>
+                    <div class="form-group">
+                        <label>Supabase Anon / Service Key</label>
+                        <input type="password" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-save-cloud-config">Save Credentials</button>
+                <button class="btn btn-primary" id="btn-sync-now">⚡ Sync Catalog to Cloud Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Free Tier Setup Modal -->
+    <div class="modal-backdrop" id="modal-free-tier" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📖 Step-by-Step Free Database Setup Guide</h3>
+                <button class="btn-close" id="btn-close-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <h4>🚀 Recommended: GitHub Free Database (Zero Setup)</h4>
+                <ol>
+                    <li>Click <strong>"Download catalog.json"</strong> on the top bar.</li>
+                    <li>Create a free public repository on GitHub (e.g. <code>https://github.com/StrawHatsStudios/lively-engine-wallpapers</code>).</li>
+                    <li>Upload <code>catalog.json</code> to the root of the repo.</li>
+                    <li>Click <strong>"Raw"</strong> on GitHub to copy your direct URL:
+                        <br><code>https://raw.githubusercontent.com/StrawHatsStudios/lively-engine-wallpapers/main/catalog.json</code>
+                    </li>
+                    <li>In the <strong>Lively Engine App</strong>, tap <strong>Cloud Sync</strong>, paste this URL, and all users will get live wallpaper updates automatically!</li>
+                </ol>
+
+                <h4>⚡ Supabase Database Setup (Free SQL Table)</h4>
+                <p>If you prefer a real-time relational database:</p>
+                <ol>
+                    <li>Create a free project at <a href="https://supabase.com" target="_blank" style="color:var(--neon-cyan)">supabase.com</a>.</li>
+                    <li>Open the <strong>SQL Editor</strong> in Supabase and run:
+                        <br><code>CREATE TABLE wallpapers (id TEXT PRIMARY KEY, title TEXT, category TEXT, data JSONB);</code>
+                    </li>
+                    <li>Enter your Project URL & Anon Key in the <strong>"Cloud Database Sync"</strong> modal to sync with 1 click.</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-modal-ok">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Input for JSON Import -->
+    <input type="file" id="import-json-file" accept=".json,.motion" style="display: none;">
+
+    <script src="admin.js"></script>
+</body>
+</html>

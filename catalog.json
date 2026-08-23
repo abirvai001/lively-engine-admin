@@ -1,0 +1,218 @@
+{
+  "version": 1,
+  "developer": "StrawHats Studios",
+  "contact": "strawhats.studios@gmail.com",
+  "appName": "Lively Engine",
+  "wallpapers": [
+    {
+      "id": "season_sakura_01",
+      "title": "Spring Sakura Blossom",
+      "category": "SEASONS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Delicate 5-lobed pink sakura cherry blossom petals fluttering gracefully with 3D wind aerodynamics.",
+      "resolution": "4K HDR",
+      "tags": ["Spring", "Sakura", "Blossom", "Nature", "Relaxing"],
+      "config": {
+        "speedMultiplier": 0.9,
+        "particleDensity": 1.1,
+        "parallaxSensitivity": 1.2,
+        "glowIntensity": 1.1,
+        "primaryColorArgb": -18491,
+        "secondaryColorArgb": -29279,
+        "accentColorArgb": -49023,
+        "particleEffectType": "SPRING_SAKURA",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "season_fireflies_01",
+      "title": "Summer Twilight Fireflies",
+      "category": "SEASONS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Warm golden twilight sunbeams with glowing bioluminescent fireflies pulsating softly in summer dusk.",
+      "resolution": "4K Ultra HD",
+      "tags": ["Summer", "Fireflies", "Golden", "Twilight"],
+      "config": {
+        "speedMultiplier": 0.95,
+        "particleDensity": 1.1,
+        "parallaxSensitivity": 1.3,
+        "glowIntensity": 1.3,
+        "primaryColorArgb": -3722,
+        "secondaryColorArgb": -19712,
+        "accentColorArgb": -28928,
+        "particleEffectType": "SUMMER_FIREFLIES",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "season_autumn_01",
+      "title": "Autumn Golden Leaves",
+      "category": "SEASONS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Rich amber and crimson maple foliage gently swaying and descending in crisp autumn wind gusts.",
+      "resolution": "4K 60FPS",
+      "tags": ["Autumn", "Maple", "Leaves", "Golden", "Fall"],
+      "config": {
+        "speedMultiplier": 0.85,
+        "particleDensity": 1.0,
+        "parallaxSensitivity": 1.1,
+        "glowIntensity": 1.15,
+        "primaryColorArgb": -1683200,
+        "secondaryColorArgb": -4246004,
+        "accentColorArgb": -28928,
+        "particleEffectType": "AUTUMN_LEAVES",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "season_winter_01",
+      "title": "Winter Snow Crystals",
+      "category": "SEASONS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Geometric crystalline snowflakes and soft background flurries swirling in serene winter frost.",
+      "resolution": "4K HDR",
+      "tags": ["Winter", "Snow", "Crystals", "Frost", "Cold"],
+      "config": {
+        "speedMultiplier": 0.8,
+        "particleDensity": 1.15,
+        "parallaxSensitivity": 1.0,
+        "glowIntensity": 1.2,
+        "primaryColorArgb": -1,
+        "secondaryColorArgb": -8333057,
+        "accentColorArgb": -16718081,
+        "particleEffectType": "WINTER_SNOW",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "weather_monsoon_01",
+      "title": "Real Monsoon Rain & Ripples",
+      "category": "WEATHER",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Authentic translucent falling raindrops with dynamic glass splash ripples.",
+      "resolution": "4K Ultra HD",
+      "tags": ["Rain", "Monsoon", "Water", "Ripples", "Storm"],
+      "config": {
+        "speedMultiplier": 1.05,
+        "particleDensity": 1.25,
+        "parallaxSensitivity": 1.2,
+        "glowIntensity": 1.2,
+        "primaryColorArgb": -3086081,
+        "secondaryColorArgb": -8333057,
+        "accentColorArgb": -16731905,
+        "particleEffectType": "MONSOON_RAIN",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "weather_lightning_01",
+      "title": "Thunder Tempest & Lightning",
+      "category": "WEATHER",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Fractal branching electrical bolts with whole-screen ambient sky flash.",
+      "resolution": "4K 60FPS",
+      "tags": ["Lightning", "Thunder", "Storm", "Electric"],
+      "config": {
+        "speedMultiplier": 1.2,
+        "particleDensity": 1.1,
+        "parallaxSensitivity": 1.3,
+        "glowIntensity": 1.4,
+        "primaryColorArgb": -2039553,
+        "secondaryColorArgb": -16718081,
+        "accentColorArgb": -6467875,
+        "particleEffectType": "THUNDER_LIGHTNING",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "mist_mountain_01",
+      "title": "Dense Rolling Mountain Fog",
+      "category": "MIST",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Multi-layered undulating harmonic fog layers with smooth continuous drift.",
+      "resolution": "4K Ultra HD",
+      "tags": ["Fog", "Mist", "Mountain", "Atmosphere"],
+      "config": {
+        "speedMultiplier": 0.75,
+        "particleDensity": 1.0,
+        "parallaxSensitivity": 0.9,
+        "glowIntensity": 1.0,
+        "primaryColorArgb": -2037520,
+        "secondaryColorArgb": -7306066,
+        "accentColorArgb": -5194043,
+        "particleEffectType": "DENSE_ROLLING_FOG",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "mist_mystic_smoke_01",
+      "title": "Mystic Billowing Smoke",
+      "category": "MIST",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Organic rising smoke plumes that expand and diffuse with turbulent eddy dispersion.",
+      "resolution": "4K Ultra HD",
+      "tags": ["Smoke", "Mystic", "Ethereal", "Wisps"],
+      "config": {
+        "speedMultiplier": 0.85,
+        "particleDensity": 1.15,
+        "parallaxSensitivity": 1.1,
+        "glowIntensity": 1.2,
+        "primaryColorArgb": -2572328,
+        "secondaryColorArgb": -7114533,
+        "accentColorArgb": -7722014,
+        "particleEffectType": "MYSTIC_BILLOWING_SMOKE",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "cosmic_starlight_01",
+      "title": "Astral Starlight Dust",
+      "category": "COSMIC",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Multi-depth diamond starbursts with cross-flare glints and galaxy pulsar aura.",
+      "resolution": "4K HDR",
+      "tags": ["Space", "Stars", "Starlight", "Cosmic"],
+      "config": {
+        "speedMultiplier": 0.9,
+        "particleDensity": 1.2,
+        "parallaxSensitivity": 1.4,
+        "glowIntensity": 1.35,
+        "primaryColorArgb": -2033670,
+        "secondaryColorArgb": -16718081,
+        "accentColorArgb": -8630785,
+        "particleEffectType": "COSMIC_STARLIGHT",
+        "touchInteractive": true
+      }
+    },
+    {
+      "id": "cosmic_nebula_01",
+      "title": "Cosmic Nebula Vortex",
+      "category": "COSMIC",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "StrawHats Studios",
+      "description": "Swirling stellar cloud with interstellar gas turbulence and pulsar cores.",
+      "resolution": "4K HDR",
+      "tags": ["Nebula", "Space", "Vortex", "Cosmic"],
+      "config": {
+        "speedMultiplier": 0.95,
+        "particleDensity": 1.25,
+        "parallaxSensitivity": 1.3,
+        "glowIntensity": 1.3,
+        "primaryColorArgb": -16715010,
+        "secondaryColorArgb": -7724153,
+        "accentColorArgb": -41414,
+        "particleEffectType": "COSMIC_NEBULA",
+        "touchInteractive": true
+      }
+    }
+  ]
+}
