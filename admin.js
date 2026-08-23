@@ -347,7 +347,7 @@ function initUI() {
 }
 
 function loadCloudCredentials() {
-    document.getElementById("gh-repo").value = localStorage.getItem("lively_gh_repo") || "";
+    document.getElementById("gh-repo").value = localStorage.getItem("lively_gh_repo") || "abirvai001/Lively-Engine";
     document.getElementById("gh-path").value = localStorage.getItem("lively_gh_path") || "main/catalog.json";
     document.getElementById("gh-token").value = localStorage.getItem("lively_gh_token") || "";
     document.getElementById("sb-url").value = localStorage.getItem("lively_sb_url") || "";
