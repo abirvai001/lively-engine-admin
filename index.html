@@ -80,6 +80,16 @@
                             <option value="COSMIC">🌌 Cosmic & Space</option>
                             <option value="FLUID">💧 Fluid & Energy</option>
                             <option value="CUSTOM">✨ Exclusive Custom</option>
+                            <option value="VIDEO">🎬 Loop Video</option>
+                            <option value="PHOTO">🖼️ Static Image</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="input-content-type">Content Type</label>
+                        <select id="input-content-type">
+                            <option value="CUSTOM_PHOTO_MOTION">⚡ Particle Motion (3D Live)</option>
+                            <option value="STATIC_IMAGE">🖼️ Static Image (No Effects)</option>
+                            <option value="VIDEO_LOOP">🎬 Loop Video</option>
                         </select>
                     </div>
                 </div>
@@ -106,8 +116,8 @@
                     </div>
                 </div>
 
-                <!-- Background Image Upload / URL -->
-                <div class="form-group">
+                <!-- Background Image / Video Upload -->
+                <div class="form-group" id="section-artwork">
                     <label>Background Artwork (Optional 3D Parallax Layer)</label>
                     <div class="upload-dropzone" id="dropzone">
                         <input type="file" id="input-file" accept="image/*" style="display: none;">
@@ -123,6 +133,26 @@
                     <div style="margin-top: 8px;">
                         <input type="url" id="input-image-url" class="form-input" placeholder="Or paste direct image URL (e.g. https://.../wallpaper.jpg)">
                     </div>
+                </div>
+
+                <!-- Video Upload Section -->
+                <div class="form-group" id="section-video" style="display: none;">
+                    <label>Loop Video Source</label>
+                    <div class="upload-dropzone" id="dropzone-video" style="cursor: pointer;">
+                        <input type="file" id="input-video-file" accept="video/*" style="display: none;">
+                        <div class="dropzone-content">
+                            <span class="dropzone-icon">🎬</span>
+                            <span class="dropzone-text" id="dropzone-video-label">Click to pick a video file (MP4, WebM)</span>
+                            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
+                                <button type="button" class="btn btn-sm" id="btn-browse-video">Browse Video</button>
+                                <button type="button" class="btn btn-sm btn-danger" id="btn-remove-video" style="display: none;">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 8px;">
+                        <input type="url" id="input-video-url" class="form-input" placeholder="Or paste direct video URL (e.g. https://.../loop.mp4)">
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 11px; margin-top: 6px;">⚠️ For GitHub deployment, use a direct hosted URL (CDN, GitHub raw, etc.). Large Base64 videos may exceed GitHub file limits.</p>
                 </div>
 
                 <!-- Physics Tuning -->

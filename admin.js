@@ -158,6 +158,7 @@ let catalog = [];
 let editingId = null;
 let currentConfig = { ...DEFAULT_CATALOG[0].config };
 let currentArtworkData = null;
+let currentVideoData = null;
 let loadedBgImage = new Image();
 loadedBgImage.crossOrigin = "anonymous";
 
@@ -265,6 +266,62 @@ function initUI() {
     removeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         clearArtwork();
+    });
+
+    // Content Type selector — show/hide artwork vs video sections
+    const contentTypeSelect = document.getElementById("input-content-type");
+    const sectionArtwork = document.getElementById("section-artwork");
+    const sectionVideo = document.getElementById("section-video");
+    const particleSection = document.getElementById("particle-selector")?.closest(".form-group");
+    const physicsSection = document.querySelector(".physics-grid");
+
+    function applyContentTypeUI(type) {
+        const isVideo = type === "VIDEO_LOOP";
+        const isStatic = type === "STATIC_IMAGE";
+        const isMotion = type === "CUSTOM_PHOTO_MOTION";
+
+        if (sectionArtwork) sectionArtwork.style.display = isVideo ? "none" : "block";
+        if (sectionVideo) sectionVideo.style.display = isVideo ? "block" : "none";
+        if (particleSection) particleSection.style.display = isMotion ? "block" : "none";
+        if (physicsSection) physicsSection.style.display = isMotion ? "grid" : "none";
+    }
+
+    contentTypeSelect.addEventListener("change", (e) => applyContentTypeUI(e.target.value));
+    applyContentTypeUI(contentTypeSelect.value); // run on load
+
+    // Video file picker
+    const videoFileInput = document.getElementById("input-video-file");
+    const browseVideoBtn = document.getElementById("btn-browse-video");
+    const removeVideoBtn = document.getElementById("btn-remove-video");
+    const videoUrlInput = document.getElementById("input-video-url");
+    const dropzoneVideo = document.getElementById("dropzone-video");
+
+    browseVideoBtn.addEventListener("click", () => videoFileInput.click());
+    dropzoneVideo.addEventListener("click", (e) => {
+        if (e.target !== removeVideoBtn && e.target !== browseVideoBtn) videoFileInput.click();
+    });
+
+    videoFileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) handleVideoFile(file);
+    });
+
+    if (videoUrlInput) {
+        videoUrlInput.addEventListener("input", (e) => {
+            const val = e.target.value.trim();
+            if (val) {
+                currentVideoData = val;
+                document.getElementById("dropzone-video-label").textContent = `✓ Video URL set`;
+                removeVideoBtn.style.display = "inline-block";
+            } else {
+                clearVideo();
+            }
+        });
+    }
+
+    removeVideoBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearVideo();
     });
 
     // Form Submit (Save to Catalog)
@@ -496,6 +553,32 @@ function clearArtwork() {
     document.getElementById("btn-remove-img").style.display = "none";
 }
 
+function clearVideo() {
+    currentVideoData = null;
+    const fileInput = document.getElementById("input-video-file");
+    if (fileInput) fileInput.value = "";
+    const urlInput = document.getElementById("input-video-url");
+    if (urlInput) urlInput.value = "";
+    document.getElementById("dropzone-video-label").textContent = "Click to pick a video file (MP4, WebM)";
+    document.getElementById("btn-remove-video").style.display = "none";
+}
+
+function handleVideoFile(file) {
+    // For videos, use URL only if it's a supported remote URL; base64 encoding
+    // large videos is avoided — use URL if possible. If file is picked locally,
+    // store as base64 data URI (only practical for small clips).
+    if (file.size > 10 * 1024 * 1024) {
+        alert("⚠️ Video file is large (>10MB). Consider hosting it on a CDN and pasting the URL instead. The file will be stored as base64 which may be very large for GitHub.");
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        currentVideoData = event.target.result;
+        document.getElementById("dropzone-video-label").textContent = `✓ ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+        document.getElementById("btn-remove-video").style.display = "inline-block";
+    };
+    reader.readAsDataURL(file);
+}
+
 function handleImageFile(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -557,19 +640,30 @@ function buildItemFromForm() {
     const title = document.getElementById("input-title").value || "Untitled Motion";
     const category = document.getElementById("input-category").value;
     const desc = document.getElementById("input-desc").value;
+    const contentType = document.getElementById("input-content-type").value || "CUSTOM_PHOTO_MOTION";
 
-    return {
+    const isVideo = contentType === "VIDEO_LOOP";
+    const isStatic = contentType === "STATIC_IMAGE";
+
+    const item = {
         id: editingId || `custom_${Date.now()}`,
         title: title,
         category: category,
-        type: "CUSTOM_PHOTO_MOTION",
+        type: contentType,
         author: "StrawHats Studios",
         description: desc,
-        resolution: "4K Ultra HD",
-        tags: [category, currentConfig.particleEffectType],
-        photoUriString: currentArtworkData,
+        resolution: isVideo ? "HD 1080p" : "4K Ultra HD",
+        tags: [category, isVideo ? "video" : isStatic ? "image" : currentConfig.particleEffectType],
         config: { ...currentConfig }
     };
+
+    if (isVideo) {
+        item.videoUriString = currentVideoData || document.getElementById("input-video-url")?.value.trim() || null;
+    } else {
+        item.photoUriString = currentArtworkData;
+    }
+
+    return item;
 }
 
 function savePresetFromForm() {
@@ -601,15 +695,17 @@ function renderCatalogTable() {
         const tr = document.createElement("tr");
         const priColor = "#" + (item.config?.primaryColorArgb ? (item.config.primaryColorArgb & 0xFFFFFF).toString(16).padStart(6, '0') : "00f2fe");
 
-        tr.innerHTML = `
+    tr.innerHTML = `
             <td>
                 <div class="table-preview-orb" style="background: ${priColor}22; border: 1px solid ${priColor};">
-                    ⚡
+                    ${item.type === 'VIDEO_LOOP' || item.type === 'CUSTOM_VIDEO' ? '🎬' : item.type === 'STATIC_IMAGE' ? '🖼️' : '⚡'}
                 </div>
             </td>
             <td><strong>${item.title}</strong></td>
             <td><span style="color: var(--neon-cyan)">${item.category}</span></td>
-            <td>${item.config?.particleEffectType || "SPRING_SAKURA"}</td>
+            <td>
+                <span style="font-size:10px; padding: 2px 6px; border-radius:4px; background: ${item.type === 'VIDEO_LOOP' ? '#FF8C00' : item.type === 'STATIC_IMAGE' ? '#4CAF50' : '#00F2FE'}22; color: ${item.type === 'VIDEO_LOOP' ? '#FF8C00' : item.type === 'STATIC_IMAGE' ? '#69FF94' : 'var(--neon-cyan)'}; border: 1px solid currentColor;">${item.type || 'CUSTOM_PHOTO_MOTION'}</span>
+            </td>
             <td>${item.config?.speedMultiplier || 1.0}x / ${item.config?.particleDensity || 1.0}x</td>
             <td>
                 <div class="table-actions">
@@ -641,11 +737,33 @@ function loadItemIntoEditor(item) {
     document.getElementById("input-category").value = item.category || "SEASONS";
     document.getElementById("input-desc").value = item.description || "";
 
+    // Restore content type
+    const contentTypeEl = document.getElementById("input-content-type");
+    const detectedType = item.type || "CUSTOM_PHOTO_MOTION";
+    contentTypeEl.value = detectedType;
+    // Trigger UI toggle
+    contentTypeEl.dispatchEvent(new Event("change"));
+
+    // Restore artwork
     const artwork = item.photoUriString || item.photoDataUri;
-    if (artwork) {
+    if (artwork && detectedType !== "VIDEO_LOOP") {
         setArtworkSource(artwork, item.title);
     } else {
         clearArtwork();
+    }
+
+    // Restore video
+    const video = item.videoUriString;
+    if (video && detectedType === "VIDEO_LOOP") {
+        currentVideoData = video;
+        const vidUrlInput = document.getElementById("input-video-url");
+        if (vidUrlInput && (video.startsWith("http") || video.startsWith("data:"))) {
+            vidUrlInput.value = video.startsWith("http") ? video : "";
+        }
+        document.getElementById("dropzone-video-label").textContent = `✓ Video loaded`;
+        document.getElementById("btn-remove-video").style.display = "inline-block";
+    } else {
+        clearVideo();
     }
 
     if (item.config) {
