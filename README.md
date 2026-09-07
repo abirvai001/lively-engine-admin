@@ -34,27 +34,8 @@ No servers, no API costs, and unlimited bandwidth via GitHub CDN.
 
 ---
 
-### Option 2: Supabase Free Tier (PostgreSQL + REST API)
-1. Create a free account at [supabase.com](https://supabase.com).
-2. Create a new project and go to the **SQL Editor**. Run this SQL query to create the table:
-   ```sql
-   create table wallpapers (
-       id text primary key,
-       title text not null,
-       category text,
-       data jsonb not null,
-       created_at timestamp with time zone default timezone('utc'::text, now())
-   );
-
-   -- Allow public read access
-   alter table wallpapers enable row level security;
-   create policy "Public wallpapers are viewable by everyone" on wallpapers for select using (true);
-   create policy "Service can insert/update" on wallpapers for all using (true);
-   ```
-3. Copy your **Project URL** (e.g. `https://xxxx.supabase.co`) and **Anon Key** into the Admin Panel's Cloud Sync modal.
-4. Click **Sync Catalog to Cloud Now**.
-
 ---
+
 
 ## 🌐 1-Click Free Admin Panel Web Hosting
 

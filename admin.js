@@ -1,20 +1,17 @@
 /**
- * Lively Engine - Next-Gen Studio & Supabase Realtime Control Center
+ * Lively Engine - Next-Gen Studio & GitHub Realtime Control Center
  * Built by StrawHats Studios
  */
 
 // Global State
 const state = {
-    // GitHub Cloud Backend (Primary)
+    // GitHub Cloud Backend (Exclusive Primary)
     githubRepo: localStorage.getItem('lively_gh_repo') || 'abirvai001/lively-engine-admin',
     githubBranch: localStorage.getItem('lively_gh_branch') || 'main',
     githubPath: localStorage.getItem('lively_gh_path') || 'catalog.json',
     githubToken: localStorage.getItem('lively_gh_token') || '',
     customEffects: JSON.parse(localStorage.getItem('lively_custom_effects') || '[]'),
 
-    // Supabase (Legacy fallback)
-    supabaseUrl: localStorage.getItem('lively_sb_url') || '',
-    supabaseKey: localStorage.getItem('lively_sb_key') || '',
     currentMode: 'CUSTOM_PHOTO_MOTION', // CUSTOM_PHOTO_MOTION, STATIC_IMAGE, VIDEO_LOOP
     currentEffect: 'SPRING_SAKURA',
     currentOverlay: 'clean', // clean, lockscreen, homescreen, infocard
@@ -369,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadInitialData();
     initEffectStudio();
     initGitHubBackendManager();
-    testSupabaseConnection(false);
+    testGitHubConnection(false);
     startLiveClock();
 });
 
@@ -1924,20 +1921,14 @@ function initForms() {
             else state.wallpapers.unshift(wallpaperItem);
 
             localStorage.setItem('lively_wallpapers', JSON.stringify(state.wallpapers));
-
-            if (state.supabaseUrl && state.supabaseKey) {
-                try {
-                    await supabaseRequest('wallpapers', 'POST', wallpaperItem);
-                    alert(`✅ Wallpaper "${title}" saved & published to Supabase Realtime DB!`);
-                } catch (err) {
-                    alert('⚠️ Saved locally, Supabase notice: ' + err.message);
-                }
-            } else {
-                alert('✅ Wallpaper saved locally! (Configure Supabase in the Setup tab to sync to mobile app).');
-            }
-
             renderAllViews();
             resetWallpaperForm();
+
+            if (state.githubToken) {
+                await commitCatalogToGitHub();
+            } else {
+                alert(`✅ Wallpaper "${title}" saved to local catalog! Click "🚀 Sync All to GitHub" or configure your GitHub Token in GitHub Cloud Sync tab.`);
+            }
         });
     }
 
@@ -1975,19 +1966,13 @@ function initForms() {
 
             state.banners.sort((a, b) => a.priority - b.priority);
             localStorage.setItem('lively_banners', JSON.stringify(state.banners));
-
-            if (state.supabaseUrl && state.supabaseKey) {
-                try {
-                    await supabaseRequest('banners', 'POST', bannerItem);
-                    alert('✅ Trending banner published to Supabase!');
-                } catch (err) {
-                    alert('⚠️ Supabase error: ' + err.message);
-                }
-            } else {
-                alert('✅ Banner saved locally!');
-            }
-
             renderAllViews();
+
+            if (state.githubToken) {
+                await commitCatalogToGitHub();
+            } else {
+                alert('✅ Trending banner saved! Click "🚀 Sync All to GitHub" to publish.');
+            }
         });
     }
 
@@ -2009,15 +1994,12 @@ function initForms() {
             };
 
             state.appUpdate = updateItem;
-            if (state.supabaseUrl && state.supabaseKey) {
-                try {
-                    await supabaseRequest('app_updates', 'POST', updateItem);
-                    alert('🚀 In-App Update broadcast live to mobile app users!');
-                } catch (err) {
-                    alert('⚠️ Supabase notice: ' + err.message);
-                }
+            localStorage.setItem('lively_app_update', JSON.stringify(state.appUpdate));
+
+            if (state.githubToken) {
+                await commitCatalogToGitHub();
             } else {
-                alert('✅ Update details saved locally!');
+                alert('🚀 In-App Update saved! Click "🚀 Sync All to GitHub" to publish OTA.');
             }
         });
     }
@@ -2039,21 +2021,15 @@ function initForms() {
 
             state.notifications.unshift(notifItem);
             localStorage.setItem('lively_notifications', JSON.stringify(state.notifications));
-
-            if (state.supabaseUrl && state.supabaseKey) {
-                try {
-                    await supabaseRequest('notifications', 'POST', notifItem);
-                    alert(`🔔 Broadcast notification "${notifItem.title}" sent live!`);
-                } catch (err) {
-                    alert('⚠️ Supabase error: ' + err.message);
-                }
-            } else {
-                alert('🔔 Notification saved locally!');
-            }
-
             document.getElementById('notif-title').value = '';
             document.getElementById('notif-body').value = '';
             renderAllViews();
+
+            if (state.githubToken) {
+                await commitCatalogToGitHub();
+            } else {
+                alert(`🔔 Broadcast notification "${notifItem.title}" saved! Click "🚀 Sync All to GitHub" to push.`);
+            }
         });
     }
 
@@ -2088,20 +2064,14 @@ function initForms() {
             state.categories.sort((a, b) => (a.priority || 0) - (b.priority || 0));
 
             localStorage.setItem('lively_categories', JSON.stringify(state.categories));
-
-            if (state.supabaseUrl && state.supabaseKey) {
-                try {
-                    await supabaseRequest('categories', 'POST', catItem);
-                    alert(`✅ Category "${displayName}" published live to Supabase & Mobile App!`);
-                } catch (err) {
-                    alert('⚠️ Supabase sync notice: ' + err.message);
-                }
-            } else {
-                alert(`✅ Category "${displayName}" saved locally!`);
-            }
-
             resetCategoryForm();
             renderAllViews();
+
+            if (state.githubToken) {
+                await commitCatalogToGitHub();
+            } else {
+                alert(`✅ Category "${displayName}" saved! Click "🚀 Sync All to GitHub" to publish.`);
+            }
         });
     }
 
@@ -2133,92 +2103,26 @@ function initForms() {
             };
 
             state.devInfo = devItem;
-            if (state.supabaseUrl && state.supabaseKey) {
-                try {
-                    await supabaseRequest('dev_info', 'POST', devItem);
-                    alert('✅ Dev Info synced live to Android App bottom Dev Info screen!');
-                } catch (err) {
-                    alert('⚠️ Supabase notice: ' + err.message);
-                }
+            localStorage.setItem('lively_dev_info', JSON.stringify(state.devInfo));
+
+            if (state.githubToken) {
+                await commitCatalogToGitHub();
             } else {
-                alert('✅ Dev info saved locally!');
+                alert('✅ Dev Info saved! Click "🚀 Sync All to GitHub" to update.');
             }
         });
     }
 
-    // Supabase Credentials Save & Test
-    document.getElementById('btn-save-sb-config')?.addEventListener('click', () => {
-        const url = document.getElementById('sb-config-url').value.trim();
-        const key = document.getElementById('sb-config-key').value.trim();
-        state.supabaseUrl = url;
-        state.supabaseKey = key;
-        localStorage.setItem('lively_sb_url', url);
-        localStorage.setItem('lively_sb_key', key);
-        testSupabaseConnection(true);
-    });
-
-    document.getElementById('btn-test-sb-conn')?.addEventListener('click', () => testSupabaseConnection(true));
-    document.getElementById('btn-quick-test-conn')?.addEventListener('click', () => testSupabaseConnection(true));
-
-    // Copy SQL Script
-    document.getElementById('btn-copy-sql')?.addEventListener('click', () => {
-        const snippet = document.getElementById('sql-code-snippet').innerText;
-        navigator.clipboard.writeText(snippet);
-        alert('📋 SQL migration script copied to clipboard! Paste it into Supabase SQL Editor.');
-    });
+    document.getElementById('btn-quick-test-conn')?.addEventListener('click', () => testGitHubConnection(true));
 
     // Export Catalog JSON
     document.getElementById('btn-export-catalog')?.addEventListener('click', () => {
-        const blob = new Blob([JSON.stringify(state.wallpapers, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `lively-wallpapers-catalog-${Date.now()}.json`;
-        a.click();
+        downloadJsonFile(generateFullCatalogBundle(), 'catalog.json');
     });
 
-    // Sync All to Supabase
+    // Sync All to GitHub
     document.getElementById('btn-publish-all')?.addEventListener('click', async () => {
-        if (!state.supabaseUrl || !state.supabaseKey) {
-            alert('Please configure your Supabase Project URL & Anon Key in the Supabase Setup tab first.');
-            switchTab('tab-setup');
-            return;
-        }
-
-        try {
-            // 1. Sync Categories
-            for (const cat of state.categories) await supabaseRequest('categories', 'POST', cat);
-            
-            // 2. Sync Wallpapers
-            for (const wp of state.wallpapers) await supabaseRequest('wallpapers', 'POST', wp);
-            
-            const existingWpIds = new Set(state.wallpapers.map(w => w.id));
-
-            // 3. Sync Banners (sanitize wallpaper_id if referenced wallpaper is missing)
-            for (const b of state.banners) {
-                const bannerPayload = { ...b };
-                if (bannerPayload.wallpaper_id && !existingWpIds.has(bannerPayload.wallpaper_id)) {
-                    bannerPayload.wallpaper_id = null;
-                }
-                await supabaseRequest('banners', 'POST', bannerPayload);
-            }
-
-            // 4. Sync Notifications (sanitize wallpaper_id if missing)
-            for (const n of state.notifications) {
-                const notifPayload = { ...n };
-                if (notifPayload.wallpaper_id && !existingWpIds.has(notifPayload.wallpaper_id)) {
-                    notifPayload.wallpaper_id = null;
-                }
-                await supabaseRequest('notifications', 'POST', notifPayload);
-            }
-
-            // 5. Sync App Updates & Studio Dev Info
-            await supabaseRequest('app_updates', 'POST', state.appUpdate);
-            await supabaseRequest('dev_info', 'POST', state.devInfo);
-
-            alert('⚡ All Categories, Wallpapers, Trending Banners, OTA Update, and Studio Info successfully synced to Supabase!');
-        } catch (e) {
-            alert('⚠️ Sync error: ' + e.message);
-        }
+        await commitCatalogToGitHub();
     });
 }
 
@@ -2291,13 +2195,13 @@ async function deleteCategory(id) {
 
     state.categories = state.categories.filter(c => c.id !== id);
     localStorage.setItem('lively_categories', JSON.stringify(state.categories));
-
-    if (state.supabaseUrl && state.supabaseKey) {
-        try {
-            await supabaseRequest(`categories?id=eq.${id}`, 'DELETE');
-        } catch (e) {}
-    }
     renderAllViews();
+
+    if (state.githubToken) {
+        await commitCatalogToGitHub();
+    } else {
+        alert(`🗑️ Category "${cat.display_name}" deleted! Click "🚀 Sync All to GitHub" to publish changes.`);
+    }
 }
 
 function editWallpaper(id) {
@@ -2331,20 +2235,23 @@ function editWallpaper(id) {
 }
 
 async function deleteWallpaper(id) {
-    if (!confirm('Are you sure you want to delete this wallpaper?')) return;
+    const wp = state.wallpapers.find(w => w.id === id);
+    const title = wp ? wp.title : id;
+    if (!confirm(`Are you sure you want to delete wallpaper "${title}"?`)) return;
+
     state.wallpapers = state.wallpapers.filter(w => w.id !== id);
     localStorage.setItem('lively_wallpapers', JSON.stringify(state.wallpapers));
-
-    if (state.supabaseUrl && state.supabaseKey) {
-        try {
-            await supabaseRequest(`wallpapers?id=eq.${id}`, 'DELETE');
-        } catch (e) {}
-    }
     renderAllViews();
+
+    if (state.githubToken) {
+        await commitCatalogToGitHub();
+    } else {
+        alert(`🗑️ Wallpaper "${title}" deleted from catalog! Click "🚀 Sync All to GitHub" to publish deletion to GitHub.`);
+    }
 }
 
 // ==============================================================================
-// SUPABASE REST CLIENT & DATA LOADING
+// GITHUB DATA LOADING & INITIALIZATION
 // ==============================================================================
 function loadInitialData() {
     const cachedCats = localStorage.getItem('lively_categories');
@@ -2444,13 +2351,6 @@ function loadInitialData() {
         localStorage.setItem('lively_custom_effects', JSON.stringify(state.customEffects));
     }
 
-    if (document.getElementById('sb-config-url')) {
-        document.getElementById('sb-config-url').value = state.supabaseUrl;
-    }
-    if (document.getElementById('sb-config-key')) {
-        document.getElementById('sb-config-key').value = state.supabaseKey;
-    }
-
     // Set first wallpaper as active
     if (state.wallpapers.length > 0) {
         const first = state.wallpapers[0];
@@ -2459,82 +2359,6 @@ function loadInitialData() {
     }
 
     renderAllViews();
-}
-
-async function supabaseRequest(endpoint, method = 'GET', body = null) {
-    if (!state.supabaseUrl || !state.supabaseKey) {
-        throw new Error('Supabase URL or Key not configured.');
-    }
-
-    const cleanUrl = state.supabaseUrl.replace(/\/$/, '');
-    const url = `${cleanUrl}/rest/v1/${endpoint}`;
-
-    const headers = {
-        'apikey': state.supabaseKey,
-        'Authorization': `Bearer ${state.supabaseKey}`,
-        'Content-Type': 'application/json',
-        'Prefer': method === 'POST' ? 'resolution=merge-duplicates,return=representation' : 'return=representation'
-    };
-
-    const options = { method, headers };
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-    if (!response.ok) {
-        const err = await response.text();
-        throw new Error(`Supabase API error (${response.status}): ${err}`);
-    }
-    return response.json();
-}
-
-async function testSupabaseConnection(showAlert = true) {
-    const statusText = document.getElementById('status-text');
-    const statusDot = document.getElementById('status-dot');
-    const overviewUrl = document.getElementById('overview-db-url');
-
-    if (!state.supabaseUrl || !state.supabaseKey) {
-        if (statusText) statusText.innerText = '🟡 Local Offline Mode';
-        if (statusDot) statusDot.style.backgroundColor = '#FFB300';
-        if (overviewUrl) overviewUrl.innerText = 'Local Offline Cache';
-        if (showAlert) alert('Please enter your Supabase Project URL & Anon Key in the Supabase Setup tab.');
-        return false;
-    }
-
-    try {
-        if (statusText) statusText.innerText = 'Connecting...';
-        await supabaseRequest('wallpapers?select=id&limit=1', 'GET');
-        
-        if (statusText) statusText.innerText = '🟢 Supabase Connected';
-        if (statusDot) statusDot.style.backgroundColor = '#00E676';
-        if (overviewUrl) overviewUrl.innerText = state.supabaseUrl;
-
-        if (showAlert) alert('✅ Successfully connected to Supabase Realtime DB!');
-        fetchRemoteData();
-        return true;
-    } catch (e) {
-        if (statusText) statusText.innerText = '🔴 Connection Failed';
-        if (statusDot) statusDot.style.backgroundColor = '#FF5252';
-        if (overviewUrl) overviewUrl.innerText = 'Error: ' + e.message;
-        if (showAlert) alert('❌ Failed to connect to Supabase: ' + e.message);
-        return false;
-    }
-}
-
-async function fetchRemoteData() {
-    try {
-        const remoteCats = await supabaseRequest('categories?select=*&order=priority.asc');
-        if (Array.isArray(remoteCats) && remoteCats.length > 0) {
-            state.categories = remoteCats;
-            localStorage.setItem('lively_categories', JSON.stringify(state.categories));
-        }
-
-        const remoteWp = await supabaseRequest('wallpapers?select=*&order=created_at.desc');
-        if (Array.isArray(remoteWp) && remoteWp.length > 0) {
-            state.wallpapers = remoteWp;
-            localStorage.setItem('lively_wallpapers', JSON.stringify(state.wallpapers));
-        }
-        renderAllViews();
-    } catch (e) {}
 }
 
 // Render All Views
@@ -3620,14 +3444,22 @@ function updateGitHubStatusDisplay() {
     `;
 }
 
-async function testGitHubConnection() {
-    const repo = document.getElementById('gh-repo')?.value.trim() || state.githubRepo;
+async function testGitHubConnection(showAlert = false) {
+    const repo = document.getElementById('gh-repo')?.value.trim() || state.githubRepo || 'abirvai001/lively-engine-admin';
     const token = document.getElementById('gh-token')?.value.trim() || state.githubToken;
     const ind = document.getElementById('gh-status-indicator');
     const details = document.getElementById('gh-status-details');
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-dot');
+    const overviewRepo = document.getElementById('overview-repo-name');
+    const overviewProtocol = document.getElementById('overview-protocol');
+
+    if (overviewRepo) overviewRepo.innerText = repo;
 
     if (!repo || !repo.includes('/')) {
-        alert('Please enter a valid GitHub repository in "owner/repo" format (e.g. abirvai001/lively-engine-admin).');
+        if (statusText) statusText.innerText = '🔴 Invalid Repo';
+        if (statusDot) statusDot.style.backgroundColor = '#FF5252';
+        if (showAlert) alert('Please enter a valid GitHub repository in "owner/repo" format (e.g. abirvai001/lively-engine-admin).');
         return;
     }
 
@@ -3652,25 +3484,41 @@ async function testGitHubConnection() {
             ind.style.color = 'var(--success-green)';
         }
 
+        if (statusText) {
+            statusText.innerText = token ? '🟢 GitHub: API Ready' : '🟢 GitHub: Public Read-Only';
+        }
+        if (statusDot) {
+            statusDot.style.backgroundColor = '#00E676';
+        }
+        if (overviewProtocol) {
+            overviewProtocol.innerText = token ? 'GitHub REST API (Push/Sync Active)' : 'GitHub Raw CDN (Public Sync)';
+        }
+
         if (details) {
             details.innerHTML = `
                 • Repo: <strong>${escapeHtml(data.full_name)}</strong> (${data.private ? '🔒 Private' : '🌍 Public'})<br>
                 • Default Branch: <code>${escapeHtml(data.default_branch)}</code> • Stars: ${data.stargazers_count}<br>
-                • Push Permission: <strong>${data.permissions?.push ? '✅ YES (Can Commit via API)' : (token ? '⚠️ Limited Permissions' : '❌ Read-Only (Token required to push)')}</strong><br>
+                • Push Permission: <strong>${data.permissions?.push ? '✅ YES (Can Commit via API)' : (token ? '⚠️ Limited Permissions' : 'ℹ️ Read-Only (Token required to push via API)')}</strong><br>
                 • Raw CDN Target: https://raw.githubusercontent.com/${repo}/${state.githubBranch}/${state.githubPath}
             `;
         }
 
-        alert(`✅ Connected to GitHub repository "${data.full_name}"!`);
+        if (showAlert) alert(`✅ Connected to GitHub repository "${data.full_name}"!`);
     } catch (err) {
         if (ind) {
             ind.innerText = 'Connection Failed';
             ind.style.color = 'var(--cyber-pink)';
         }
+        if (statusText) {
+            statusText.innerText = '🔴 GitHub: Offline / Error';
+        }
+        if (statusDot) {
+            statusDot.style.backgroundColor = '#FF5252';
+        }
         if (details) {
             details.innerHTML = `• Error: <span style="color: var(--cyber-pink);">${escapeHtml(err.message)}</span><br>• Check repository name and personal access token permissions.`;
         }
-        alert(`❌ GitHub connection failed: ${err.message}`);
+        if (showAlert) alert(`❌ GitHub connection failed: ${err.message}`);
     }
 }
 

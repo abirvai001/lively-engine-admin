@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lively Engine - Admin Panel & Supabase Realtime Control Center</title>
+    <title>Lively Engine - Admin Panel & GitHub Realtime Control Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
             <div class="brand-badge">⚡</div>
             <div class="brand-text">
                 <div class="brand-title">Lively Engine <span class="neon-cyan">Studio</span></div>
-                <div class="brand-subtitle">Standalone Realtime Admin Panel • StrawHats Studios</div>
+                <div class="brand-subtitle">Standalone GitHub Cloud Admin Panel • StrawHats Studios</div>
             </div>
         </div>
 
@@ -60,9 +60,6 @@
         </button>
         <button class="tab-btn" data-tab="tab-github-setup">
             <span>🐙</span> GitHub Cloud Sync
-        </button>
-        <button class="tab-btn" data-tab="tab-setup">
-            <span>⚡</span> Supabase (Legacy)
         </button>
     </nav>
 
@@ -108,20 +105,20 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
                 <div class="card-panel">
                     <div class="panel-header">
-                        <div class="panel-title">⚡ Supabase Realtime Cloud Status</div>
-                        <button class="btn btn-secondary btn-sm" onclick="switchTab('tab-setup')">Configure</button>
+                        <div class="panel-title">🐙 GitHub Cloud Realtime Status</div>
+                        <button class="btn btn-secondary btn-sm" onclick="switchTab('tab-github-setup')">Configure</button>
                     </div>
                     <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 14px;">
-                        Manage and broadcast live wallpaper drops, video loops, banners, and updates directly into client mobile devices.
+                        Manage and broadcast live wallpaper drops, video loops, banners, and updates directly through your GitHub repository.
                     </p>
                     <div id="overview-db-card" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 14px; border: 1px solid var(--border-glass);">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: var(--text-muted); font-size: 12px;">Endpoint</span>
-                            <span id="overview-db-url" style="color: var(--neon-cyan); font-size: 12px; font-weight: 600;">Connecting...</span>
+                            <span style="color: var(--text-muted); font-size: 12px;">Repository</span>
+                            <span id="overview-repo-name" style="color: var(--neon-cyan); font-size: 12px; font-weight: 600;">abirvai001/lively-engine-admin</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--text-muted); font-size: 12px;">Protocol</span>
-                            <span style="color: var(--success-green); font-size: 12px; font-weight: 600;">Supabase REST / Realtime CDC</span>
+                            <span id="overview-protocol" style="color: var(--success-green); font-size: 12px; font-weight: 600;">GitHub REST API & CDN</span>
                         </div>
                     </div>
                 </div>
@@ -699,7 +696,7 @@
 
                             <div style="display: flex; gap: 12px; margin-top: 18px;">
                                 <button type="submit" class="btn btn-primary" style="flex: 1;">
-                                    💾 Save & Publish to Supabase Realtime DB
+                                    💾 Save Wallpaper & Sync to GitHub
                                 </button>
                                 <button type="button" class="btn btn-secondary" id="btn-reset-wp-form">
                                     🔄 Reset Form
@@ -797,7 +794,7 @@
 
                         <div style="display: flex; gap: 10px; margin-top: 14px;">
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
-                                ⚡ Save Category to Supabase
+                                ⚡ Save Category & Sync to GitHub
                             </button>
                             <button type="button" class="btn btn-secondary" id="btn-reset-category-form">
                                 🔄 Reset
@@ -876,7 +873,7 @@
 
                     <div style="display: flex; gap: 12px; margin-top: 14px;">
                         <button type="submit" class="btn btn-primary">
-                            ⚡ Save Banner to Supabase
+                            ⚡ Save Banner & Sync to GitHub
                         </button>
                         <button type="button" class="btn btn-secondary" id="btn-reset-banner-form">
                             🔄 Reset Form
@@ -939,7 +936,7 @@
 
                     <div class="form-group">
                         <label>Release Notes & Changelog (Markdown)</label>
-                        <textarea id="up-changelog" class="form-textarea" style="min-height: 120px;">• Real-time cloud sync with Supabase
+                        <textarea id="up-changelog" class="form-textarea" style="min-height: 120px;">• Real-time cloud sync with GitHub
 • New 3D motion physics engine
 • Support for static photo and video loops
 • Performance optimizations and 60 FPS battery efficiency</textarea>
@@ -1063,7 +1060,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px;">
-                        💾 Save Dev Info to Supabase Realtime DB
+                        💾 Save Dev Info & Sync to GitHub
                     </button>
                 </form>
             </div>
@@ -1148,274 +1145,6 @@
                                 • Target: https://raw.githubusercontent.com/abirvai001/lively-engine-admin/main/catalog.json<br>
                                 • Ready to package 14+ wallpapers, retro Android classics & dynamic effects.
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 7: SUPABASE FREE TIER SETUP & SQL WIZARD (LEGACY FALLBACK) -->
-        <section id="tab-setup" class="tab-content">
-            <div class="card-panel">
-                <div class="panel-header">
-                    <div class="panel-title">⚡ Supabase Realtime DB Free Tier Setup (0 Costs Forever)</div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                    <div>
-                        <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">📋 Step-by-Step 100% Free Setup</h4>
-                        <ol style="color: var(--text-secondary); font-size: 13px; line-height: 1.8; padding-left: 20px;">
-                            <li>Sign up for free at <a href="https://supabase.com" target="_blank" style="color: var(--neon-cyan); font-weight: 700;">supabase.com</a>.</li>
-                            <li>Create a new free project (e.g. <code>LivelyEngine</code>).</li>
-                            <li>In the left sidebar, click <strong>SQL Editor</strong> &gt; <strong>New Query</strong>.</li>
-                            <li>Paste the SQL script shown on the right and click <strong>RUN</strong>.</li>
-                            <li>Go to <strong>Project Settings &gt; API</strong> and copy:
-                                <ul>
-                                    <li><strong>Project URL</strong> (e.g. <code>https://xxxx.supabase.co</code>)</li>
-                                    <li><strong>Project API Key (anon/public)</strong></li>
-                                </ul>
-                            </li>
-                            <li>Paste your credentials below and click <strong>Save & Test Connection</strong>!</li>
-                        </ol>
-
-                        <div style="margin-top: 24px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 18px; border: 1px solid var(--border-glass);">
-                            <h4 style="color: #FFF; font-size: 14px; margin-bottom: 12px;">🔑 Connect Supabase Project</h4>
-                            <div class="form-group">
-                                <label>Supabase Project URL</label>
-                                <input type="text" id="sb-config-url" class="form-input" placeholder="https://your-project.supabase.co">
-                            </div>
-                            <div class="form-group">
-                                <label>Supabase Anon / Service API Key</label>
-                                <input type="password" id="sb-config-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <button type="button" class="btn btn-primary" id="btn-save-sb-config" style="flex: 1;">
-                                    💾 Save Credentials
-                                </button>
-                                <button type="button" class="btn btn-secondary" id="btn-test-sb-conn">
-                                    🔄 Test Connection
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <h4 style="color: var(--neon-cyan);">💾 SQL Database Migration Script</h4>
-                            <button class="btn btn-secondary btn-sm" id="btn-copy-sql">📋 Copy SQL Script</button>
-                        </div>
-                        <div class="code-box" id="sql-code-snippet" style="max-height: 480px;">
--- 1. Wallpapers Table
-create table if not exists public.wallpapers (
-    id text primary key,
-    title text not null,
-    category text not null default 'SEASONS',
-    type text not null default 'CUSTOM_PHOTO_MOTION',
-    author text default 'StrawHats Studios',
-    description text default '',
-    tags text[] default array['3D', 'Live', 'Motion'],
-    fps int default 60,
-    resolution text default '4K HDR',
-    video_uri_string text,
-    photo_uri_string text,
-    data jsonb not null default '{}'::jsonb,
-    created_at timestamptz default now() not null
-);
-
--- Ensure all columns exist even if the table was created earlier
-alter table public.wallpapers add column if not exists author text default 'StrawHats Studios';
-alter table public.wallpapers add column if not exists description text default '';
-alter table public.wallpapers add column if not exists tags text[] default array['3D', 'Live', 'Motion'];
-alter table public.wallpapers add column if not exists fps int default 60;
-alter table public.wallpapers add column if not exists resolution text default '4K HDR';
-alter table public.wallpapers add column if not exists video_uri_string text;
-alter table public.wallpapers add column if not exists photo_uri_string text;
-alter table public.wallpapers add column if not exists data jsonb not null default '{}'::jsonb;
-alter table public.wallpapers add column if not exists created_at timestamptz default now();
-
--- 2. Trending & Hero Banners Table
-create table if not exists public.banners (
-    id text primary key,
-    title text not null,
-    subtitle text not null default '',
-    badge text not null default 'TRENDING',
-    wallpaper_id text references public.wallpapers(id) on delete set null,
-    banner_image_url text,
-    gradient_colors bigint[] default array[4278252286, 4283416318],
-    priority int default 1,
-    is_active boolean default true,
-    created_at timestamptz default now() not null
-);
-
-alter table public.banners add column if not exists banner_image_url text;
-alter table public.banners add column if not exists gradient_colors bigint[] default array[4278252286, 4283416318];
-alter table public.banners add column if not exists priority int default 1;
-alter table public.banners add column if not exists is_active boolean default true;
-alter table public.banners add column if not exists created_at timestamptz default now();
-
--- 3. In-App Updates Table
-create table if not exists public.app_updates (
-    id text primary key default 'latest_release',
-    latest_version_code int not null default 1,
-    latest_version_name text not null default '1.0.0',
-    min_required_version_code int not null default 1,
-    force_update boolean not null default false,
-    title text not null default 'Update Available',
-    changelog text not null default '• Real-time cloud sync with Supabase
-• New 3D motion physics engine
-• Performance optimizations and bug fixes',
-    download_url text not null default 'https://github.com/StrawHatsStudios/lively-engine-wallpapers/releases/latest',
-    release_date text not null default '2026-08-24',
-    updated_at timestamptz default now() not null
-);
-
-alter table public.app_updates add column if not exists latest_version_code int default 1;
-alter table public.app_updates add column if not exists latest_version_name text default '1.0.0';
-alter table public.app_updates add column if not exists min_required_version_code int default 1;
-alter table public.app_updates add column if not exists force_update boolean default false;
-alter table public.app_updates add column if not exists title text default 'Update Available';
-alter table public.app_updates add column if not exists changelog text default '';
-alter table public.app_updates add column if not exists download_url text default '';
-alter table public.app_updates add column if not exists release_date text default '2026-08-24';
-alter table public.app_updates add column if not exists updated_at timestamptz default now();
-
--- 4. Broadcast Notifications Table
-create table if not exists public.notifications (
-    id text primary key,
-    title text not null,
-    body text not null,
-    category text not null default 'ANNOUNCEMENT',
-    action_url text,
-    wallpaper_id text references public.wallpapers(id) on delete set null,
-    image_url text,
-    timestamp bigint not null,
-    created_at timestamptz default now() not null
-);
-
-alter table public.notifications add column if not exists action_url text;
-alter table public.notifications add column if not exists wallpaper_id text references public.wallpapers(id) on delete set null;
-alter table public.notifications add column if not exists image_url text;
-alter table public.notifications add column if not exists timestamp bigint default extract(epoch from now()) * 1000;
-alter table public.notifications add column if not exists created_at timestamptz default now();
-
--- 5. Developer & Studio Info Table
-create table if not exists public.dev_info (
-    id text primary key default 'studio_info',
-    studio_name text not null default 'StrawHats Studios',
-    tagline text not null default 'Crafting Next-Gen 3D Interactive & Physics Wallpapers',
-    email text not null default 'strawhats.studios@gmail.com',
-    website text not null default 'https://strawhats.studios.dev',
-    github text not null default 'https://github.com/StrawHatsStudios',
-    telegram text not null default 'https://t.me/StrawHatsStudios',
-    discord text not null default 'https://discord.gg/strawhats',
-    app_version text not null default '1.0.0 (Release)',
-    package_id text not null default 'ss.lively.engine',
-    announcement text not null default 'Welcome to Lively Engine! Enjoy real-time 3D motion wallpapers created by StrawHats Studios.',
-    updated_at timestamptz default now() not null
-);
-
-alter table public.dev_info add column if not exists studio_name text default 'StrawHats Studios';
-alter table public.dev_info add column if not exists tagline text default 'Crafting Next-Gen 3D Interactive & Physics Wallpapers';
-alter table public.dev_info add column if not exists email text default 'strawhats.studios@gmail.com';
-alter table public.dev_info add column if not exists website text default 'https://strawhats.studios.dev';
-alter table public.dev_info add column if not exists github text default 'https://github.com/StrawHatsStudios';
-alter table public.dev_info add column if not exists telegram text default 'https://t.me/StrawHatsStudios';
-alter table public.dev_info add column if not exists discord text default 'https://discord.gg/strawhats';
-alter table public.dev_info add column if not exists app_version text default '1.0.0 (Release)';
-alter table public.dev_info add column if not exists package_id text default 'ss.lively.engine';
-alter table public.dev_info add column if not exists announcement text default 'Welcome to Lively Engine!';
-alter table public.dev_info add column if not exists updated_at timestamptz default now();
-
--- Enable Row Level Security (RLS)
-alter table public.wallpapers enable row level security;
-alter table public.banners enable row level security;
-alter table public.app_updates enable row level security;
-alter table public.notifications enable row level security;
-alter table public.dev_info enable row level security;
-
--- Drop existing policies
-drop policy if exists "Public Read Wallpapers" on public.wallpapers;
-drop policy if exists "Admin All Wallpapers" on public.wallpapers;
-drop policy if exists "Allow all operations on wallpapers" on public.wallpapers;
-
-drop policy if exists "Public Read Banners" on public.banners;
-drop policy if exists "Admin All Banners" on public.banners;
-drop policy if exists "Allow all operations on banners" on public.banners;
-
-drop policy if exists "Public Read Updates" on public.app_updates;
-drop policy if exists "Admin All Updates" on public.app_updates;
-drop policy if exists "Allow all operations on app_updates" on public.app_updates;
-
-drop policy if exists "Public Read Notifications" on public.notifications;
-drop policy if exists "Admin All Notifications" on public.notifications;
-drop policy if exists "Allow all operations on notifications" on public.notifications;
-
-drop policy if exists "Public Read DevInfo" on public.dev_info;
-drop policy if exists "Admin All DevInfo" on public.dev_info;
-drop policy if exists "Allow all operations on dev_info" on public.dev_info;
-
--- Full-Access Policies with WITH CHECK
-create policy "Allow all operations on wallpapers" on public.wallpapers for all using (true) with check (true);
-create policy "Allow all operations on banners" on public.banners for all using (true) with check (true);
-create policy "Allow all operations on app_updates" on public.app_updates for all using (true) with check (true);
-create policy "Allow all operations on notifications" on public.notifications for all using (true) with check (true);
-create policy "Allow all operations on dev_info" on public.dev_info for all using (true) with check (true);
-
--- Enable Realtime for all tables safely
-do $$
-begin
-  if not exists (
-    select 1 from pg_publication_tables 
-    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'wallpapers'
-  ) then
-    alter publication supabase_realtime add table public.wallpapers;
-  end if;
-
-  if not exists (
-    select 1 from pg_publication_tables 
-    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'banners'
-  ) then
-    alter publication supabase_realtime add table public.banners;
-  end if;
-
-  if not exists (
-    select 1 from pg_publication_tables 
-    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'app_updates'
-  ) then
-    alter publication supabase_realtime add table public.app_updates;
-  end if;
-
-  if not exists (
-    select 1 from pg_publication_tables 
-    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'notifications'
-  ) then
-    alter publication supabase_realtime add table public.notifications;
-  end if;
-
-  if not exists (
-    select 1 from pg_publication_tables 
-    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'dev_info'
-  ) then
-    alter publication supabase_realtime add table public.dev_info;
-  end if;
-end $$;
-
--- Seed Default Records
-insert into public.app_updates (id, latest_version_code, latest_version_name, min_required_version_code, force_update, title, changelog, download_url, release_date)
-values ('latest_release', 1, '1.0.0', 1, false, 'Lively Engine v1.0.0', 'Initial public release by StrawHats Studios with 3D live physics and Supabase cloud sync.', 'https://github.com/StrawHatsStudios/lively-engine-wallpapers/releases', '2026-08-24')
-on conflict (id) do update set
-  latest_version_code = excluded.latest_version_code,
-  latest_version_name = excluded.latest_version_name,
-  title = excluded.title;
-
-insert into public.dev_info (id, studio_name, tagline, email, website, github, telegram, discord, app_version, package_id, announcement)
-values ('studio_info', 'StrawHats Studios', 'Crafting Next-Gen 3D Interactive & Physics Wallpapers', 'strawhats.studios@gmail.com', 'https://strawhats.studios.dev', 'https://github.com/StrawHatsStudios', 'https://t.me/StrawHatsStudios', 'https://discord.gg/strawhats', '1.0.0 (Release)', 'ss.lively.engine', 'Welcome to Lively Engine! Enjoy real-time 3D motion wallpapers created by StrawHats Studios.')
-on conflict (id) do update set
-  studio_name = excluded.studio_name,
-  tagline = excluded.tagline;
-
--- Reload Supabase PostgREST schema cache immediately
-notify pgrst, 'reload schema';
                         </div>
                     </div>
                 </div>
