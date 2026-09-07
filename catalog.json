@@ -1,91 +1,274 @@
 {
   "version": 1,
-  "developer": "StrawHats Studios",
-  "contact": "strawhats.studios@gmail.com",
-  "appName": "Lively Engine",
+  "generated_by": "Lively Engine Admin Studio",
+  "last_updated": "2026-09-07T11:13:49.513Z",
+  "categories": [
+    {
+      "id": "cat_all",
+      "name": "ALL",
+      "display_name": "All Wallpapers",
+      "icon_emoji": "✨",
+      "priority": 0,
+      "is_active": true
+    },
+    {
+      "id": "cat_builtin",
+      "name": "BUILT_IN",
+      "display_name": "Built-in Live",
+      "icon_emoji": "⚡",
+      "priority": 1,
+      "is_active": true
+    },
+    {
+      "id": "cat_classics",
+      "name": "CLASSICS",
+      "display_name": "Retro Android Legends",
+      "icon_emoji": "📱",
+      "priority": 2,
+      "is_active": true
+    },
+    {
+      "id": "cat_anime",
+      "name": "ANIME",
+      "display_name": "Anime & Manga",
+      "icon_emoji": "🎌",
+      "priority": 3,
+      "is_active": true
+    },
+    {
+      "id": "cat_cars",
+      "name": "CARS",
+      "display_name": "Supercars 4K",
+      "icon_emoji": "🏎️",
+      "priority": 4,
+      "is_active": true
+    },
+    {
+      "id": "cat_cyberpunk",
+      "name": "CYBERPUNK",
+      "display_name": "Cyberpunk & Neon",
+      "icon_emoji": "🌆",
+      "priority": 5,
+      "is_active": true
+    },
+    {
+      "id": "cat_nature",
+      "name": "NATURE",
+      "display_name": "Nature & Landscapes",
+      "icon_emoji": "🌿",
+      "priority": 6,
+      "is_active": true
+    },
+    {
+      "id": "cat_space",
+      "name": "SPACE",
+      "display_name": "Deep Space & Cosmos",
+      "icon_emoji": "🌌",
+      "priority": 7,
+      "is_active": true
+    }
+  ],
   "wallpapers": [
+    {
+      "id": "classic_samsung_s3_dandelion",
+      "title": "Samsung S3 Dandelion Ripple",
+      "category": "CLASSICS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "Samsung Electronics / Retro Revival",
+      "description": "The iconic Galaxy S3 dandelion puff with floating parachute seeds and interactive water ripple physics upon touch.",
+      "tags": [
+        "Samsung",
+        "Galaxy S3",
+        "Dandelion",
+        "Retro",
+        "Water",
+        "Ripples"
+      ],
+      "fps": 60,
+      "resolution": "4K 60FPS",
+      "photo_uri_string": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 0.85,
+        "particleDensity": 1.1,
+        "parallaxSensitivity": 1.25,
+        "glowIntensity": 1.2,
+        "particleEffectType": "SAMSUNG_S3_DANDELION",
+        "primaryColorArgb": 4294967295,
+        "secondaryColorArgb": 4289979900,
+        "accentColorArgb": 4286698666
+      }
+    },
+    {
+      "id": "classic_samsung_s4_balloons",
+      "title": "Samsung S4 Life Companion",
+      "category": "CLASSICS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "Samsung Electronics / Retro Revival",
+      "description": "The unforgettable Galaxy S4 colorful hot-air balloons floating across vivid azure skies with 3D parallax and sun flares.",
+      "tags": [
+        "Samsung",
+        "Galaxy S4",
+        "Life Companion",
+        "Balloons",
+        "Sky",
+        "Retro"
+      ],
+      "fps": 60,
+      "resolution": "4K HDR",
+      "photo_uri_string": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 0.75,
+        "particleDensity": 1,
+        "parallaxSensitivity": 1.35,
+        "glowIntensity": 1.3,
+        "particleEffectType": "SAMSUNG_S4_BALLOONS",
+        "primaryColorArgb": 4294963574,
+        "secondaryColorArgb": 4294937216,
+        "accentColorArgb": 4286634239
+      }
+    },
+    {
+      "id": "classic_sony_xperia_z",
+      "title": "Sony Xperia Z Cosmic Flow",
+      "category": "CLASSICS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "Sony Mobile / Retro Revival",
+      "description": "The legendary Xperia Z flowing chromatic silk waves undulating dynamically with floating cosmic stardust.",
+      "tags": [
+        "Sony",
+        "Xperia Z",
+        "Silk Flow",
+        "Waves",
+        "Neon",
+        "Retro"
+      ],
+      "fps": 60,
+      "resolution": "4K 60FPS",
+      "photo_uri_string": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 1,
+        "particleDensity": 1.2,
+        "parallaxSensitivity": 1.2,
+        "glowIntensity": 1.4,
+        "particleEffectType": "SONY_XPERIA_Z_FLOW",
+        "primaryColorArgb": 4292886779,
+        "secondaryColorArgb": 4278257151,
+        "accentColorArgb": 4294918273
+      }
+    },
+    {
+      "id": "classic_sony_arc_midnight",
+      "title": "Sony Arc Midnight Pulse",
+      "category": "CLASSICS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "Sony Ericsson / Retro Revival",
+      "description": "Deep navy ambient cosmic fluid pulse inspired by the classic Sony Ericsson Xperia Arc.",
+      "tags": [
+        "Sony",
+        "Xperia Arc",
+        "Midnight",
+        "Cyan",
+        "Aura",
+        "Retro"
+      ],
+      "fps": 60,
+      "resolution": "4K Ultra HD",
+      "photo_uri_string": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 0.95,
+        "particleDensity": 1.15,
+        "parallaxSensitivity": 1.15,
+        "glowIntensity": 1.35,
+        "particleEffectType": "SONY_ARC_MIDNIGHT",
+        "primaryColorArgb": 4279828479,
+        "secondaryColorArgb": 4278227434,
+        "accentColorArgb": 4292999162
+      }
+    },
+    {
+      "id": "classic_nexus_phase_beam",
+      "title": "Nexus 4 Holo Phase Beam",
+      "category": "CLASSICS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "Google Android / Retro Revival",
+      "description": "The beloved Android 4.0 Ice Cream Sandwich Holo phase beam with diagonal laser beams and translucent glowing orbs.",
+      "tags": [
+        "Google",
+        "Nexus",
+        "Android 4.0",
+        "Holo",
+        "Phase Beam",
+        "Retro"
+      ],
+      "fps": 60,
+      "resolution": "4K 60FPS",
+      "photo_uri_string": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 1.05,
+        "particleDensity": 1.1,
+        "parallaxSensitivity": 1.2,
+        "glowIntensity": 1.3,
+        "particleEffectType": "NEXUS_PHASE_BEAM",
+        "primaryColorArgb": 4281578981,
+        "secondaryColorArgb": 4289357516,
+        "accentColorArgb": 4294949683
+      }
+    },
+    {
+      "id": "classic_htc_sense_weather",
+      "title": "HTC Sense Atmospheric Rays",
+      "category": "CLASSICS",
+      "type": "CUSTOM_PHOTO_MOTION",
+      "author": "HTC Corporation / Retro Revival",
+      "description": "HTC Sense weather live wallpaper with volumetric golden sunbeams, rolling weather mountain clouds, and gentle raindrops.",
+      "tags": [
+        "HTC",
+        "HTC Sense",
+        "Weather",
+        "Sunrays",
+        "Clouds",
+        "Retro"
+      ],
+      "fps": 60,
+      "resolution": "4K HDR",
+      "photo_uri_string": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 1.1,
+        "particleDensity": 1.2,
+        "parallaxSensitivity": 1.3,
+        "glowIntensity": 1.25,
+        "particleEffectType": "HTC_SENSE_CLOUDS",
+        "primaryColorArgb": 4294956367,
+        "secondaryColorArgb": 4286634239,
+        "accentColorArgb": 4293717997
+      }
+    },
     {
       "id": "season_sakura_01",
       "title": "Spring Sakura Blossom",
       "category": "SEASONS",
       "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Delicate 5-lobed pink sakura cherry blossom petals fluttering gracefully with 3D wind aerodynamics.",
+      "author": "Nature Studio",
+      "description": "Delicate 5-lobed pink sakura cherry blossom petals fluttering gracefully with 3D axial tumbling across gentle spring breezes.",
+      "tags": [
+        "Spring",
+        "Sakura",
+        "Blossom",
+        "Nature",
+        "Relaxing"
+      ],
+      "fps": 60,
       "resolution": "4K HDR",
-      "tags": ["Spring", "Sakura", "Blossom", "Nature", "Relaxing"],
-      "config": {
+      "photo_uri_string": "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1080&q=80",
+      "data": {
         "speedMultiplier": 0.9,
         "particleDensity": 1.1,
         "parallaxSensitivity": 1.2,
         "glowIntensity": 1.1,
-        "primaryColorArgb": -18491,
-        "secondaryColorArgb": -29279,
-        "accentColorArgb": -49023,
         "particleEffectType": "SPRING_SAKURA",
-        "touchInteractive": true
-      }
-    },
-    {
-      "id": "season_fireflies_01",
-      "title": "Summer Twilight Fireflies",
-      "category": "SEASONS",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Warm golden twilight sunbeams with glowing bioluminescent fireflies pulsating softly in summer dusk.",
-      "resolution": "4K Ultra HD",
-      "tags": ["Summer", "Fireflies", "Golden", "Twilight"],
-      "config": {
-        "speedMultiplier": 0.95,
-        "particleDensity": 1.1,
-        "parallaxSensitivity": 1.3,
-        "glowIntensity": 1.3,
-        "primaryColorArgb": -3722,
-        "secondaryColorArgb": -19712,
-        "accentColorArgb": -28928,
-        "particleEffectType": "SUMMER_FIREFLIES",
-        "touchInteractive": true
-      }
-    },
-    {
-      "id": "season_autumn_01",
-      "title": "Autumn Golden Leaves",
-      "category": "SEASONS",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Rich amber and crimson maple foliage gently swaying and descending in crisp autumn wind gusts.",
-      "resolution": "4K 60FPS",
-      "tags": ["Autumn", "Maple", "Leaves", "Golden", "Fall"],
-      "config": {
-        "speedMultiplier": 0.85,
-        "particleDensity": 1.0,
-        "parallaxSensitivity": 1.1,
-        "glowIntensity": 1.15,
-        "primaryColorArgb": -1683200,
-        "secondaryColorArgb": -4246004,
-        "accentColorArgb": -28928,
-        "particleEffectType": "AUTUMN_LEAVES",
-        "touchInteractive": true
-      }
-    },
-    {
-      "id": "season_winter_01",
-      "title": "Winter Snow Crystals",
-      "category": "SEASONS",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Geometric crystalline snowflakes and soft background flurries swirling in serene winter frost.",
-      "resolution": "4K HDR",
-      "tags": ["Winter", "Snow", "Crystals", "Frost", "Cold"],
-      "config": {
-        "speedMultiplier": 0.8,
-        "particleDensity": 1.15,
-        "parallaxSensitivity": 1.0,
-        "glowIntensity": 1.2,
-        "primaryColorArgb": -1,
-        "secondaryColorArgb": -8333057,
-        "accentColorArgb": -16718081,
-        "particleEffectType": "WINTER_SNOW",
-        "touchInteractive": true
+        "primaryColorArgb": 4294686661,
+        "secondaryColorArgb": 4294937249,
+        "accentColorArgb": 4294967295
       }
     },
     {
@@ -93,126 +276,209 @@
       "title": "Real Monsoon Rain & Ripples",
       "category": "WEATHER",
       "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Authentic translucent falling raindrops with dynamic glass splash ripples.",
+      "author": "Atmosphere Studio",
+      "description": "Authentic translucent falling raindrops with wind drift and expanding water splash ripples on the glass surface.",
+      "tags": [
+        "Rain",
+        "Monsoon",
+        "Water",
+        "Ripples",
+        "Storm"
+      ],
+      "fps": 60,
       "resolution": "4K Ultra HD",
-      "tags": ["Rain", "Monsoon", "Water", "Ripples", "Storm"],
-      "config": {
+      "photo_uri_string": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=1080&q=80",
+      "data": {
         "speedMultiplier": 1.05,
         "particleDensity": 1.25,
         "parallaxSensitivity": 1.2,
         "glowIntensity": 1.2,
-        "primaryColorArgb": -3086081,
-        "secondaryColorArgb": -8333057,
-        "accentColorArgb": -16731905,
         "particleEffectType": "MONSOON_RAIN",
-        "touchInteractive": true
+        "primaryColorArgb": 4291881215,
+        "secondaryColorArgb": 4286634239,
+        "accentColorArgb": 4278235391
       }
     },
     {
       "id": "weather_lightning_01",
-      "title": "Thunder Tempest & Lightning",
+      "title": "Electric Lightning Tempest",
       "category": "WEATHER",
       "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Fractal branching electrical bolts with whole-screen ambient sky flash.",
-      "resolution": "4K 60FPS",
-      "tags": ["Lightning", "Thunder", "Storm", "Electric"],
-      "config": {
-        "speedMultiplier": 1.2,
-        "particleDensity": 1.1,
+      "author": "Atmosphere Studio",
+      "description": "Photorealistic branching fractal lightning bolts with sky flashes and heavy atmospheric thunderstorm rain.",
+      "tags": [
+        "Lightning",
+        "Thunder",
+        "Storm",
+        "Electric",
+        "Flash"
+      ],
+      "fps": 60,
+      "resolution": "4K HDR",
+      "photo_uri_string": "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 1.15,
+        "particleDensity": 1.3,
         "parallaxSensitivity": 1.3,
         "glowIntensity": 1.4,
-        "primaryColorArgb": -2039553,
-        "secondaryColorArgb": -16718081,
-        "accentColorArgb": -6467875,
         "particleEffectType": "THUNDER_LIGHTNING",
-        "touchInteractive": true
+        "primaryColorArgb": 4286629887,
+        "secondaryColorArgb": 4294967295,
+        "accentColorArgb": 4286629887
       }
     },
     {
-      "id": "mist_mountain_01",
-      "title": "Dense Rolling Mountain Fog",
-      "category": "MIST",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Multi-layered undulating harmonic fog layers with smooth continuous drift.",
-      "resolution": "4K Ultra HD",
-      "tags": ["Fog", "Mist", "Mountain", "Atmosphere"],
-      "config": {
-        "speedMultiplier": 0.75,
-        "particleDensity": 1.0,
-        "parallaxSensitivity": 0.9,
-        "glowIntensity": 1.0,
-        "primaryColorArgb": -2037520,
-        "secondaryColorArgb": -7306066,
-        "accentColorArgb": -5194043,
-        "particleEffectType": "DENSE_ROLLING_FOG",
-        "touchInteractive": true
+      "id": "static_matterhorn_01",
+      "title": "Matterhorn Twilight Sunset",
+      "category": "CUSTOM",
+      "type": "STATIC_IMAGE",
+      "author": "Alps Studio",
+      "description": "Ultra-sharp 8K static mountain landscape with deep ambient glow and subtle 3D gyroscope depth parallax.",
+      "tags": [
+        "Static",
+        "8K",
+        "Mountains",
+        "Sunset",
+        "Landscape"
+      ],
+      "fps": 60,
+      "resolution": "8K Ultra",
+      "photo_uri_string": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1080&q=80",
+      "data": {
+        "speedMultiplier": 1,
+        "particleDensity": 0,
+        "parallaxSensitivity": 1,
+        "glowIntensity": 1,
+        "particleEffectType": "NONE"
       }
+    }
+  ],
+  "banners": [
+    {
+      "id": "banner_monsoon_01",
+      "title": "🌧️ Real Monsoon Rain 3D",
+      "subtitle": "Authentic water physics with real surface ripples & mist",
+      "badge": "HOT 🔥",
+      "wallpaper_id": "weather_monsoon_01",
+      "gradient_colors": [
+        4278241279,
+        4278223615
+      ],
+      "priority": 1,
+      "is_active": true
     },
     {
-      "id": "mist_mystic_smoke_01",
-      "title": "Mystic Billowing Smoke",
-      "category": "MIST",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Organic rising smoke plumes that expand and diffuse with turbulent eddy dispersion.",
-      "resolution": "4K Ultra HD",
-      "tags": ["Smoke", "Mystic", "Ethereal", "Wisps"],
-      "config": {
-        "speedMultiplier": 0.85,
-        "particleDensity": 1.15,
-        "parallaxSensitivity": 1.1,
-        "glowIntensity": 1.2,
-        "primaryColorArgb": -2572328,
-        "secondaryColorArgb": -7114533,
-        "accentColorArgb": -7722014,
-        "particleEffectType": "MYSTIC_BILLOWING_SMOKE",
-        "touchInteractive": true
-      }
+      "id": "banner_sakura_02",
+      "title": "🌸 Spring Sakura Blossom",
+      "subtitle": "4K HDR Falling Petals with 3D Axial Wind Physics",
+      "badge": "POPULAR",
+      "wallpaper_id": "season_sakura_01",
+      "gradient_colors": [
+        4294931852,
+        4294934195
+      ],
+      "priority": 2,
+      "is_active": true
+    }
+  ],
+  "app_updates": [
+    {
+      "latest_version_code": 1,
+      "latest_version_name": "1.0.0",
+      "min_required_version_code": 1,
+      "force_update": false,
+      "title": "Lively Engine v1.0.0",
+      "changelog": "• GitHub Cloud Realtime Backend with zero server costs\n• Dynamic Particle & Effect Code Studio\n• Old Android Popular Wallpapers (Samsung S3/S4, Sony Xperia Z/Arc, Nexus Phase Beam, HTC Sense)\n• 60 FPS 3D Gyro Physics Engine",
+      "download_url": "https://github.com/abirvai001/Lively-Engine/releases/latest",
+      "release_date": "2026-09-07"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif_welcome_01",
+      "title": "Welcome to Lively Engine! 🚀",
+      "body": "Enjoy high-performance 3D live wallpapers powered by StrawHats Studios. Design and broadcast your own creations with the Admin Panel!",
+      "category": "ANNOUNCEMENT",
+      "action_url": "https://strawhats.studios.dev",
+      "wallpaper_id": "weather_monsoon_01",
+      "timestamp": 1788776029511
+    }
+  ],
+  "dev_info": {
+    "studio_name": "StrawHats Studios",
+    "tagline": "Crafting Next-Gen 3D Interactive & Physics Wallpapers",
+    "email": "strawhats.studios@gmail.com",
+    "website": "https://strawhats.studios.dev",
+    "github": "https://github.com/abirvai001",
+    "telegram": "https://t.me/StrawHatsStudios",
+    "discord": "https://discord.gg/strawhats",
+    "app_version": "1.0.0 (Release)",
+    "package_id": "ss.lively.engine",
+    "announcement": "Welcome to Lively Engine! Enjoy real-time 3D motion wallpapers created by StrawHats Studios."
+  },
+  "effects": [
+    {
+      "id": "fx_neon_cyber_rain",
+      "name": "Cyber Neon Matrix Rain",
+      "particleCount": 55,
+      "particleShape": "SPARK",
+      "speedMultiplier": 1.3,
+      "gravityY": 0.6,
+      "windDriftX": 0,
+      "waveOscillationFreq": 0,
+      "waveOscillationAmplitude": 0,
+      "particleSize": 12,
+      "glowIntensity": 1.4,
+      "blendMode": "ADD",
+      "touchReaction": "SCATTER",
+      "primaryColor": "#00F2FE",
+      "secondaryColor": "#00E676",
+      "accentColor": "#FFFFFF",
+      "primaryColorArgb": 4278252286,
+      "secondaryColorArgb": 4278257270,
+      "accentColorArgb": 4294967295
     },
     {
-      "id": "cosmic_starlight_01",
-      "title": "Astral Starlight Dust",
-      "category": "COSMIC",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Multi-depth diamond starbursts with cross-flare glints and galaxy pulsar aura.",
-      "resolution": "4K HDR",
-      "tags": ["Space", "Stars", "Starlight", "Cosmic"],
-      "config": {
-        "speedMultiplier": 0.9,
-        "particleDensity": 1.2,
-        "parallaxSensitivity": 1.4,
-        "glowIntensity": 1.35,
-        "primaryColorArgb": -2033670,
-        "secondaryColorArgb": -16718081,
-        "accentColorArgb": -8630785,
-        "particleEffectType": "COSMIC_STARLIGHT",
-        "touchInteractive": true
-      }
+      "id": "fx_plasma_arc_spark",
+      "name": "Tesla Plasma Electric Arc",
+      "particleCount": 40,
+      "particleShape": "STAR",
+      "speedMultiplier": 1.1,
+      "gravityY": -0.1,
+      "windDriftX": 0.15,
+      "waveOscillationFreq": 2.2,
+      "waveOscillationAmplitude": 24,
+      "particleSize": 14,
+      "glowIntensity": 1.5,
+      "blendMode": "ADD",
+      "touchReaction": "BURST",
+      "primaryColor": "#9D00FF",
+      "secondaryColor": "#00F2FE",
+      "accentColor": "#FF2A6D",
+      "primaryColorArgb": 4288479487,
+      "secondaryColorArgb": 4278252286,
+      "accentColorArgb": 4294912621
     },
     {
-      "id": "cosmic_nebula_01",
-      "title": "Cosmic Nebula Vortex",
-      "category": "COSMIC",
-      "type": "CUSTOM_PHOTO_MOTION",
-      "author": "StrawHats Studios",
-      "description": "Swirling stellar cloud with interstellar gas turbulence and pulsar cores.",
-      "resolution": "4K HDR",
-      "tags": ["Nebula", "Space", "Vortex", "Cosmic"],
-      "config": {
-        "speedMultiplier": 0.95,
-        "particleDensity": 1.25,
-        "parallaxSensitivity": 1.3,
-        "glowIntensity": 1.3,
-        "primaryColorArgb": -16715010,
-        "secondaryColorArgb": -7724153,
-        "accentColorArgb": -41414,
-        "particleEffectType": "COSMIC_NEBULA",
-        "touchInteractive": true
-      }
+      "id": "fx_hyper_ring",
+      "name": "Quantum Hyper Rings",
+      "particleCount": 30,
+      "particleShape": "RING",
+      "speedMultiplier": 0.9,
+      "gravityY": -0.2,
+      "windDriftX": 0.05,
+      "waveOscillationFreq": 1.2,
+      "waveOscillationAmplitude": 18,
+      "particleSize": 16,
+      "glowIntensity": 1.3,
+      "blendMode": "SCREEN",
+      "touchReaction": "RIPPLE",
+      "primaryColor": "#FFB300",
+      "secondaryColor": "#FF2A6D",
+      "accentColor": "#00F2FE",
+      "primaryColorArgb": 4294947584,
+      "secondaryColorArgb": 4294912621,
+      "accentColorArgb": 4278252286
     }
   ]
 }

@@ -3,344 +3,1425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lively Engine Admin - StrawHats Studios</title>
+    <title>Lively Engine - Admin Panel & Supabase Realtime Control Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Top Navigation Bar -->
+
+    <!-- Header Bar -->
     <header class="admin-header">
         <div class="brand-group">
             <div class="brand-badge">⚡</div>
             <div class="brand-text">
-                <span class="brand-title">Lively <span class="neon-cyan">Engine</span></span>
-                <span class="brand-subtitle">by StrawHats Studios • ss.lively.engine</span>
+                <div class="brand-title">Lively Engine <span class="neon-cyan">Studio</span></div>
+                <div class="brand-subtitle">Standalone Realtime Admin Panel • StrawHats Studios</div>
             </div>
         </div>
 
         <div class="header-actions">
-            <button class="btn btn-secondary" id="btn-cloud-config">
-                <span class="btn-icon">⚡</span> Cloud Database Sync
-            </button>
-            <button class="btn btn-secondary" id="btn-free-tier-setup">
-                <span class="btn-icon">📖</span> Database Setup Guide
-            </button>
-            <button class="btn btn-secondary" id="btn-import-json">
-                <span class="btn-icon">📥</span> Import JSON
-            </button>
-            <button class="btn btn-primary" id="btn-export-catalog">
-                <span class="btn-icon">🚀</span> Download catalog.json
+            <div class="header-status-badge" id="btn-quick-test-conn" title="Click to test GitHub connection">
+                <div class="status-dot-pulse" id="status-dot"></div>
+                <span id="status-text">🟡 GitHub: Not Connected</span>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-publish-all">
+                🚀 Sync All to GitHub
             </button>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="admin-workspace">
-        <!-- Left: Live Interactive Canvas Simulator -->
-        <section class="preview-panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span class="status-dot"></span> Live 3D Particle Simulator
+    <!-- Navigation Tabs Bar -->
+    <nav class="nav-tabs-bar">
+        <button class="tab-btn active" data-tab="tab-overview">
+            <span>📊</span> Overview
+        </button>
+        <button class="tab-btn" data-tab="tab-effect-studio">
+            <span>✨</span> Particle Code Studio
+        </button>
+        <button class="tab-btn" data-tab="tab-wallpapers">
+            <span>🎨</span> 3D Studio & Catalog
+        </button>
+        <button class="tab-btn" data-tab="tab-categories">
+            <span>🏷️</span> Categories <span class="tab-badge" id="badge-cat-count">9</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-banners">
+            <span>🔥</span> Trending Banners
+        </button>
+        <button class="tab-btn" data-tab="tab-updates">
+            <span>🚀</span> In-App Updates (OTA)
+        </button>
+        <button class="tab-btn" data-tab="tab-notifications">
+            <span>🔔</span> Broadcast Alerts <span class="tab-badge" id="badge-notif-count">0</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-devinfo">
+            <span>👥</span> Studio & Dev Info
+        </button>
+        <button class="tab-btn" data-tab="tab-github-setup">
+            <span>🐙</span> GitHub Cloud Sync
+        </button>
+        <button class="tab-btn" data-tab="tab-setup">
+            <span>⚡</span> Supabase (Legacy)
+        </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="admin-container">
+        <!-- TAB 1: OVERVIEW & ANALYTICS -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h4>Live Wallpapers</h4>
+                        <div class="stat-value" id="stat-wallpapers-count">14</div>
+                    </div>
+                    <div class="stat-icon-box stat-icon-cyan">🎨</div>
                 </div>
-                <div class="badge-fps" id="fps-counter">60 FPS LIVE</div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h4>Trending Banners</h4>
+                        <div class="stat-value" id="stat-banners-count">3</div>
+                    </div>
+                    <div class="stat-icon-box stat-icon-amber">🔥</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h4>App Version</h4>
+                        <div class="stat-value" id="stat-app-version">v1.0.0</div>
+                    </div>
+                    <div class="stat-icon-box stat-icon-purple">🚀</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h4>Broadcasts Sent</h4>
+                        <div class="stat-value" id="stat-notif-count">1</div>
+                    </div>
+                    <div class="stat-icon-box stat-icon-pink">🔔</div>
+                </div>
             </div>
 
-            <div class="canvas-container" id="canvas-container">
-                <canvas id="motion-canvas" width="380" height="680"></canvas>
-                <div class="canvas-overlay">
-                    <div class="wallpaper-info-chip">
-                        <h3 id="preview-title">Spring Sakura Blossom</h3>
-                        <p id="preview-category">🌸 Four Seasons • 4K HDR</p>
+            <!-- Quick Control Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">⚡ Supabase Realtime Cloud Status</div>
+                        <button class="btn btn-secondary btn-sm" onclick="switchTab('tab-setup')">Configure</button>
                     </div>
-                    <div class="gyro-tip">Move mouse inside canvas to test 3D Gyro Tilt</div>
+                    <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 14px;">
+                        Manage and broadcast live wallpaper drops, video loops, banners, and updates directly into client mobile devices.
+                    </p>
+                    <div id="overview-db-card" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 14px; border: 1px solid var(--border-glass);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="color: var(--text-muted); font-size: 12px;">Endpoint</span>
+                            <span id="overview-db-url" style="color: var(--neon-cyan); font-size: 12px; font-weight: 600;">Connecting...</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-muted); font-size: 12px;">Protocol</span>
+                            <span style="color: var(--success-green); font-size: 12px; font-weight: 600;">Supabase REST / Realtime CDC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">📢 Latest In-App Broadcast</div>
+                        <button class="btn btn-secondary btn-sm" onclick="switchTab('tab-notifications')">Compose</button>
+                    </div>
+                    <div id="overview-latest-notif" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 14px; border: 1px solid var(--border-glass);">
+                        <h4 id="overview-notif-title" style="color: #FFF; font-size: 14px; margin-bottom: 4px;">Welcome to Lively Engine! 🚀</h4>
+                        <p id="overview-notif-body" style="color: var(--text-secondary); font-size: 12px;">Enjoy high-performance 3D live wallpapers powered by StrawHats Studios.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Right: Wallpaper Preset Builder -->
-        <section class="editor-panel">
-            <div class="panel-header">
-                <div class="panel-title">⚙️ Preset Configuration</div>
-                <div class="editor-mode-badge" id="mode-badge">Creating New Wallpaper</div>
+        <!-- TAB 2: PARTICLE & EFFECT CODE STUDIO -->
+        <section id="tab-effect-studio" class="tab-content">
+            <div class="studio-grid">
+                <!-- Left: Interactive 3D Simulation Canvas -->
+                <div class="phone-stage-wrapper">
+                    <div class="panel-header" style="width: 100%; max-width: 380px; margin-bottom: 12px;">
+                        <div class="panel-title" style="font-size: 15px;"><span>✨</span> 3D Particle Live Simulator</div>
+                        <div style="font-size: 11px; font-weight: 700; color: var(--neon-cyan);" id="fx-canvas-fps">60 FPS</div>
+                    </div>
+
+                    <!-- Smartphone Device Mockup -->
+                    <div class="phone-device-frame" id="fx-phone-mockup" style="position: relative;">
+                        <div class="phone-glare"></div>
+                        <div class="phone-punchhole"></div>
+
+                        <div class="phone-screen-container">
+                            <canvas id="fx-studio-canvas" width="360" height="740" style="width: 100%; height: 100%; display: block;"></canvas>
+
+                            <!-- Overlay Indicators -->
+                            <div style="position: absolute; top: 38px; left: 14px; right: 14px; display: flex; justify-content: space-between; pointer-events: none;">
+                                <span class="tab-badge" id="fx-badge-shape" style="background: rgba(0,242,254,0.25); color: var(--neon-cyan); font-weight: 700;">SHAPE: DANDELION</span>
+                                <span class="tab-badge" id="fx-badge-count" style="background: rgba(157,0,255,0.25); color: #D070FF;">50 PARTICLES</span>
+                            </div>
+
+                            <div style="position: absolute; bottom: 35px; left: 14px; right: 14px; pointer-events: none; text-align: center;">
+                                <div style="background: rgba(10,14,24,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 6px 12px; display: inline-block;">
+                                    <div style="font-size: 12px; font-weight: 700; color: #FFF;" id="fx-preview-name">Samsung S3 Dandelion</div>
+                                    <div style="font-size: 10px; color: var(--neon-cyan);" id="fx-preview-id">ID: SAMSUNG_S3_DANDELION</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="phone-navbar-pill"></div>
+                    </div>
+
+                    <!-- Simulator Background & Camera Toggles -->
+                    <div class="viewport-controls-bar" style="margin-top: 10px;">
+                        <button type="button" class="view-toggle-btn active" data-fxbg="slate">Dark Slate</button>
+                        <button type="button" class="view-toggle-btn" data-fxbg="space">Deep Space</button>
+                        <button type="button" class="view-toggle-btn" data-fxbg="sky">Azure Sky</button>
+                        <button type="button" class="view-toggle-btn" data-fxbg="meadow">Meadow</button>
+                        <button type="button" class="view-toggle-btn" id="btn-fx-reset-sim">🔄 Reset</button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 11px; margin-top: 6px; text-align: center;">
+                        🖱️ Move mouse inside phone for 3D gyro tilt • Click / tap for interactive touch physics
+                    </p>
+                </div>
+
+                <!-- Right: Particle Code & Physics Parameter Controls -->
+                <div>
+                    <!-- Template Loader -->
+                    <div class="card-panel" style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div class="panel-title" style="font-size: 14px;"><span>⚡</span> Quick Load Preset / Template</div>
+                            <span class="tab-badge" style="background: rgba(0,242,254,0.15); color: var(--neon-cyan);">6 Retro + 5 Modern</span>
+                        </div>
+                        <select id="fx-template-select" class="form-select">
+                            <optgroup label="📱 Classic Android Flagships (Retro Legends)">
+                                <option value="SAMSUNG_S3_DANDELION">🌸 Samsung Galaxy S3 Dandelion Seeds & Ripples</option>
+                                <option value="SAMSUNG_S4_BALLOONS">🎈 Samsung Galaxy S4 Life Companion Balloons & Glints</option>
+                                <option value="SONY_XPERIA_Z_FLOW">🌊 Sony Xperia Z Cosmic Silk Waves</option>
+                                <option value="SONY_ARC_MIDNIGHT">🌌 Sony Ericsson Xperia Arc Midnight Pulse</option>
+                                <option value="NEXUS_PHASE_BEAM">⚡ Android 4.0 ICS Holo Phase Beam & Bubbles</option>
+                                <option value="HTC_SENSE_CLOUDS">⛅ HTC Sense Weather Clouds & Volumetric Sunbeams</option>
+                            </optgroup>
+                            <optgroup label="🔮 Dynamic FX Templates">
+                                <option value="QUANTUM_VORTEX">🌀 Quantum Spiral Stardust</option>
+                                <option value="NEON_CYBER_RAIN">💻 Neon Cyber Matrix Streams</option>
+                                <option value="FIRESTORM_EMBERS">🔥 Blazing Firestorm Embers</option>
+                                <option value="SUMMER_FIREFLIES">☀️ Glowing Twilight Fireflies</option>
+                                <option value="WINTER_CRYSTAL_SNOW">❄️ Hexagonal Frost Crystals</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Metadata -->
+                    <div class="card-panel" style="margin-bottom: 16px;">
+                        <div class="panel-title" style="font-size: 14px; margin-bottom: 12px;"><span>🏷️</span> Effect Identity & Metadata</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Effect Display Name</label>
+                                <input type="text" id="fx-name" class="form-input" value="Samsung S3 Dandelion Seeds" placeholder="e.g. Neon Cyber Vortex">
+                            </div>
+                            <div class="form-group">
+                                <label>Unique Effect Code / ID</label>
+                                <input type="text" id="fx-id" class="form-input" value="SAMSUNG_S3_DANDELION" placeholder="e.g. EFFECT_CYBER_VORTEX">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Description</label>
+                                <input type="text" id="fx-description" class="form-input" value="Translucent fluffy dandelion parachutes drifting gently with interactive touch water ripples" placeholder="Short description of this particle system">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Particle Shape & Geometry Tuning -->
+                    <div class="card-panel" style="margin-bottom: 16px;">
+                        <div class="panel-title" style="font-size: 14px; margin-bottom: 12px;"><span>📐</span> Particle Shape & Physics Mechanics</div>
+
+                        <!-- Shape Chips -->
+                        <div class="form-group">
+                            <label>Particle Geometry Shape</label>
+                            <div class="particle-selector-grid" id="fx-shape-grid">
+                                <button type="button" class="particle-chip active" data-shape="DANDELION_PUFF">🌸 Dandelion Puff</button>
+                                <button type="button" class="particle-chip" data-shape="ORB_GLOW">🔮 Glowing Orb</button>
+                                <button type="button" class="particle-chip" data-shape="WAVE_RIBBON">🌊 Wave Ribbon</button>
+                                <button type="button" class="particle-chip" data-shape="BUBBLE">🫧 Holo Bubble</button>
+                                <button type="button" class="particle-chip" data-shape="DROPLET">💧 Droplet</button>
+                                <button type="button" class="particle-chip" data-shape="SPARK_LINE">⚡ Spark Line</button>
+                                <button type="button" class="particle-chip" data-shape="CRYSTAL">💎 Crystal</button>
+                                <button type="button" class="particle-chip" data-shape="STAR">⭐ Star</button>
+                                <button type="button" class="particle-chip" data-shape="PETAL">🍃 Petal / Leaf</button>
+                                <button type="button" class="particle-chip" data-shape="CIRCLE">⚪ Smooth Dot</button>
+                            </div>
+                        </div>
+
+                        <!-- Physics Sliders -->
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Particle Count</span>
+                                <span class="slider-val" id="val-fx-count">40</span>
+                            </div>
+                            <input type="range" id="fx-count" class="slider-range" min="10" max="180" step="5" value="40">
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Velocity / Speed Multiplier</span>
+                                <span class="slider-val" id="val-fx-speed">0.85x</span>
+                            </div>
+                            <input type="range" id="fx-speed" class="slider-range" min="0.1" max="3.0" step="0.05" value="0.85">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    <span>Gravity Y (Fall/Rise)</span>
+                                    <span class="slider-val" id="val-fx-gravity-y">-0.15</span>
+                                </div>
+                                <input type="range" id="fx-gravity-y" class="slider-range" min="-1.0" max="1.0" step="0.05" value="-0.15">
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    <span>Wind Drift X</span>
+                                    <span class="slider-val" id="val-fx-wind">0.20</span>
+                                </div>
+                                <input type="range" id="fx-wind" class="slider-range" min="-1.5" max="1.5" step="0.05" value="0.20">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    <span>Wave Oscillation Freq</span>
+                                    <span class="slider-val" id="val-fx-osc-freq">0.8</span>
+                                </div>
+                                <input type="range" id="fx-osc-freq" class="slider-range" min="0.0" max="4.0" step="0.1" value="0.8">
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    <span>Wave Oscillation Amplitude</span>
+                                    <span class="slider-val" id="val-fx-osc-amp">15px</span>
+                                </div>
+                                <input type="range" id="fx-osc-amp" class="slider-range" min="0" max="60" step="1" value="15">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    <span>Particle Size</span>
+                                    <span class="slider-val" id="val-fx-size">14px</span>
+                                </div>
+                                <input type="range" id="fx-size" class="slider-range" min="3" max="36" step="1" value="14">
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    <span>Glow Intensity</span>
+                                    <span class="slider-val" id="val-fx-glow">1.2x</span>
+                                </div>
+                                <input type="range" id="fx-glow" class="slider-range" min="0.5" max="3.0" step="0.1" value="1.2">
+                            </div>
+                        </div>
+
+                        <!-- Blend Mode & Touch Reaction -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px;">
+                            <div class="form-group">
+                                <label>Blend Mode</label>
+                                <select id="fx-blend" class="form-select">
+                                    <option value="ADD">Additive Glow (ADD)</option>
+                                    <option value="SCREEN" selected>Soft Translucent (SCREEN)</option>
+                                    <option value="NORMAL">Standard Alpha (NORMAL)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Touch Interactivity</label>
+                                <select id="fx-touch-reaction" class="form-select">
+                                    <option value="RIPPLE" selected>💧 Water Shockwave Ripple</option>
+                                    <option value="SCATTER">💨 Scatter Away from Touch</option>
+                                    <option value="ATTRACT">🧲 Magnetic Attract to Touch</option>
+                                    <option value="BURST">⚡ Burst Fireworks on Tap</option>
+                                    <option value="NONE">❌ None</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Colors -->
+                        <div class="form-group" style="margin-top: 8px;">
+                            <label>Luminous Color Spectrum</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <span style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Primary</span>
+                                    <input type="color" id="fx-color-pri" value="#FFFFFF" class="form-input" style="height: 38px; padding: 2px;">
+                                </div>
+                                <div>
+                                    <span style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Secondary</span>
+                                    <input type="color" id="fx-color-sec" value="#B3E5FC" class="form-input" style="height: 38px; padding: 2px;">
+                                </div>
+                                <div>
+                                    <span style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Accent</span>
+                                    <input type="color" id="fx-color-acc" value="#81D4FA" class="form-input" style="height: 38px; padding: 2px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Code Editor Mode -->
+                    <div class="card-panel" style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div class="panel-title" style="font-size: 14px;"><span>💻</span> Live JSON Effect Code Definition</div>
+                            <div style="display: flex; gap: 6px;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-fx-format-code">Format</button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-fx-copy-code">Copy</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn-fx-apply-code">⚡ Apply Code</button>
+                            </div>
+                        </div>
+                        <textarea id="fx-code-editor" class="form-textarea" rows="11" style="font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; background: #0A0F1A; color: #58A6FF; border: 1px solid rgba(0,242,254,0.3); line-height: 1.5;"></textarea>
+                    </div>
+
+                    <!-- Action Hub -->
+                    <div class="card-panel" style="margin-bottom: 16px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <button type="button" class="btn btn-primary" id="btn-fx-push-github" style="flex: 1; min-width: 200px;">
+                                🚀 1-Click Commit Effect to GitHub
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-fx-save-library" style="flex: 1; min-width: 150px;">
+                                💾 Save to Library
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-fx-create-wp" style="flex: 1; min-width: 180px;">
+                                🎨 Create Wallpaper with this FX
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Effect Library List -->
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">📚 Custom Effect Library (<span id="fx-library-count">0</span> Saved)</div>
+                        </div>
+                        <div id="fx-library-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: 3D WALLPAPER STUDIO & CATALOG -->
+        <section id="tab-wallpapers" class="tab-content">
+            <div class="studio-grid">
+                <!-- Left: Authentic Smartphone Stage Viewport -->
+                <div class="phone-stage-wrapper">
+                    <div class="panel-header" style="width: 100%; max-width: 380px; margin-bottom: 12px;">
+                        <div class="panel-title" style="font-size: 15px;"><span>📱</span> Mobile Viewport (9:19.5)</div>
+                        <div style="font-size: 11px; font-weight: 700; color: var(--neon-cyan);" id="canvas-fps">60 FPS</div>
+                    </div>
+
+                    <!-- Smartphone Mockup -->
+                    <div class="phone-device-frame" id="phone-mockup">
+                        <div class="phone-glare"></div>
+                        <div class="phone-punchhole"></div>
+
+                        <!-- Live Status Bar -->
+                        <div class="phone-status-bar" id="phone-status-bar">
+                            <span id="phone-clock">12:30</span>
+                            <div class="phone-status-icons">
+                                <span>5G</span>
+                                <span>📶</span>
+                                <span>🔋 98%</span>
+                            </div>
+                        </div>
+
+                        <!-- Screen Content (Canvas / Video / Static Photo) -->
+                        <div class="phone-screen-content" id="phone-screen-stage">
+                            <!-- 3D Canvas for Particle Physics -->
+                            <canvas id="motion-canvas" width="360" height="720"></canvas>
+                            
+                            <!-- Video Player for Video Loops -->
+                            <video id="phone-video-player" loop muted playsinline></video>
+                            
+                            <!-- Static Image Artwork for Static Mode -->
+                            <img id="phone-static-image" alt="Static Wallpaper Preview">
+
+                            <!-- Lock Screen Overlay -->
+                            <div class="lockscreen-ui-overlay" id="overlay-lockscreen" style="display: none;">
+                                <div class="lockscreen-clock-widget">
+                                    <div class="lockscreen-time" id="lock-time-display">12:30</div>
+                                    <div class="lockscreen-date" id="lock-date-display">Monday, August 24</div>
+                                </div>
+                                <div class="lockscreen-bottom-actions">
+                                    <div class="lockscreen-quick-btn">🔦</div>
+                                    <div style="font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 600;">Swipe up to unlock</div>
+                                    <div class="lockscreen-quick-btn">📷</div>
+                                </div>
+                            </div>
+
+                            <!-- Home Screen Overlay -->
+                            <div class="homescreen-ui-overlay" id="overlay-homescreen" style="display: none;">
+                                <div class="home-search-bar">
+                                    <span>🔍 Search Google</span>
+                                    <span>🎙️</span>
+                                </div>
+
+                                <div class="home-app-grid">
+                                    <div class="home-app-icon">
+                                        <div class="app-icon-squircle" style="background: linear-gradient(135deg, #00E676, #00B0FF);">📞</div>
+                                        <div class="app-icon-label">Phone</div>
+                                    </div>
+                                    <div class="home-app-icon">
+                                        <div class="app-icon-squircle" style="background: linear-gradient(135deg, #00F2FE, #4FACFE);">💬</div>
+                                        <div class="app-icon-label">Messages</div>
+                                    </div>
+                                    <div class="home-app-icon">
+                                        <div class="app-icon-squircle" style="background: linear-gradient(135deg, #FF2A6D, #9D00FF);">⚡</div>
+                                        <div class="app-icon-label">Lively</div>
+                                    </div>
+                                    <div class="home-app-icon">
+                                        <div class="app-icon-squircle" style="background: linear-gradient(135deg, #FFB300, #FF5252);">⚙️</div>
+                                        <div class="app-icon-label">Settings</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Wallpaper Info Card Overlay -->
+                            <div class="phone-wallpaper-chip" id="overlay-infocard">
+                                <h3 id="preview-title">Spring Sakura Blossom</h3>
+                                <p id="preview-category">🌸 Four Seasons • 4K HDR • 60 FPS</p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Home Indicator Pill -->
+                        <div class="phone-navbar-pill"></div>
+                    </div>
+
+                    <!-- Viewport Screen Toggles -->
+                    <div class="viewport-controls-bar">
+                        <button type="button" class="view-toggle-btn active" data-overlay="clean">✨ Clean View</button>
+                        <button type="button" class="view-toggle-btn" data-overlay="lockscreen">🔒 Lock Screen</button>
+                        <button type="button" class="view-toggle-btn" data-overlay="homescreen">📱 Home Screen</button>
+                        <button type="button" class="view-toggle-btn" data-overlay="infocard">🏷️ Info Card</button>
+                        <button type="button" class="view-toggle-btn" id="btn-toggle-orbit">🌀 Auto 3D Orbit</button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 11px; margin-top: 8px; text-align: center;">
+                        🖱️ Move cursor over phone for 3D Gyro tilt • Click & drag for touch ripples
+                    </p>
+                </div>
+
+                <!-- Right: Wallpaper Creator, Media Uploader & Particle Physics -->
+                <div>
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">⚙️ Wallpaper Creator & Studio Studio</div>
+                            <div id="form-mode-badge" style="font-size: 11px; font-weight: 700; color: var(--neon-cyan); background: rgba(0,242,254,0.1); padding: 4px 10px; border-radius: 8px;">New Wallpaper</div>
+                        </div>
+
+                        <form id="form-wallpaper">
+                            <input type="hidden" id="wp-id">
+
+                            <!-- Content Type Mode Selector -->
+                            <div class="form-group">
+                                <label>Wallpaper Engine Mode</label>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 10px;" id="mode-selector-grid">
+                                    <button type="button" class="particle-chip active" data-type="CUSTOM_PHOTO_MOTION">⚡ 3D Photo Motion</button>
+                                    <button type="button" class="particle-chip" data-type="STATIC_IMAGE">🖼️ Pure Static 4K</button>
+                                    <button type="button" class="particle-chip" data-type="VIDEO_LOOP">🎬 Looping Video</button>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label>Wallpaper Title</label>
+                                    <input type="text" id="wp-title" class="form-input" placeholder="e.g. Monsoon Rain & Ripples" required value="Spring Sakura Blossom">
+                                </div>
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <select id="wp-category" class="form-select">
+                                        <option value="CLASSICS">📱 Retro Android Legends</option>
+                                        <option value="SEASONS">🌸 Four Seasons</option>
+                                        <option value="WEATHER">🌧️ Real Weather & Storms</option>
+                                        <option value="COSMIC">🌌 Cosmic & Space</option>
+                                        <option value="FLUID">💧 Fluid & Energy</option>
+                                        <option value="PARALLAX">📐 3D Gyro Parallax</option>
+                                        <option value="CYBERPUNK">⚡ Neon Cyberpunk</option>
+                                        <option value="CUSTOM">✨ Custom Creation</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Target FPS & Resolution</label>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="wp-fps" class="form-select" style="flex: 1;">
+                                            <option value="60">60 FPS</option>
+                                            <option value="120">120 FPS</option>
+                                            <option value="30">30 FPS</option>
+                                        </select>
+                                        <select id="wp-resolution" class="form-select" style="flex: 1;">
+                                            <option value="4K HDR">4K HDR</option>
+                                            <option value="4K Ultra HD">4K Ultra HD</option>
+                                            <option value="1080p 60FPS">1080p 60FPS</option>
+                                            <option value="8K Ultra">8K Ultra</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" id="wp-desc" class="form-input" placeholder="Describe motion aerodynamics and atmosphere..." value="Delicate sakura cherry blossom petals fluttering gracefully with 3D wind aerodynamics.">
+                            </div>
+
+                            <!-- Media Upload Section (Local File Upload & URL) -->
+                            <div class="form-group">
+                                <label>Artwork Image / Video Media File</label>
+
+                                <!-- Direct Action Buttons to Pick Files from PC -->
+                                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                                    <button type="button" class="btn btn-secondary" id="btn-pick-image" style="flex: 1; border: 1px solid var(--neon-cyan); background: rgba(0,242,254,0.12);">
+                                        📁 Pick Image from PC
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="btn-pick-video" style="flex: 1; border: 1px solid var(--plasma-amber); background: rgba(255,179,0,0.12);">
+                                        🎬 Pick Video from PC
+                                    </button>
+                                    <input type="file" id="media-image-input" accept="image/png,image/jpeg,image/webp,image/gif" style="display: none;">
+                                    <input type="file" id="media-video-input" accept="video/mp4,video/webm,video/ogg" style="display: none;">
+                                </div>
+                                
+                                <!-- Drag & Drop Media Upload Zone -->
+                                <div class="media-upload-dropzone" id="media-dropzone">
+                                    <span class="dropzone-icon" id="dropzone-icon">📥</span>
+                                    <div class="dropzone-text" id="dropzone-text">Drag & Drop Image or Video File from PC Here</div>
+                                    <div class="dropzone-subtext">Supports high-res PNG, JPG, WEBP photos and MP4, WebM looping videos</div>
+                                </div>
+
+                                <!-- Selected Local File Status Card -->
+                                <div id="selected-file-badge" style="display: none; align-items: center; justify-content: space-between; background: rgba(0, 230, 118, 0.12); border: 1px solid var(--success-green); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span id="selected-file-icon" style="font-size: 20px;">🖼️</span>
+                                        <div>
+                                            <div id="selected-file-name" style="font-size: 13px; font-weight: 700; color: #FFF;">photo.jpg</div>
+                                            <div id="selected-file-size" style="font-size: 11px; color: var(--success-green);">Local file loaded into phone simulator</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-danger btn-sm" id="btn-clear-media">✕ Clear</button>
+                                </div>
+
+                                <!-- Quick Presets Gallery -->
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Or Choose Quick Preset:</span>
+                                </div>
+                                <div class="media-presets-grid" id="presets-gallery">
+                                    <!-- Populated dynamically with high-res presets -->
+                                </div>
+
+                                <!-- Direct Web URL Input -->
+                                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                    <input type="url" id="wp-media-url" class="form-input" placeholder="Or paste direct image / video URL (https://...)">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btn-apply-url" style="white-space: nowrap;">Load URL</button>
+                                </div>
+
+                                <!-- Thumbnail URL Input (for Video Posters & Quick Grid Loading) -->
+                                <div>
+                                    <input type="url" id="wp-thumbnail-url" class="form-input" placeholder="Custom Grid Thumbnail URL (Optional - auto-captured if empty)">
+                                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 3px;">Auto-generated snapshot from 3D phone canvas or photo if left empty</div>
+                                </div>
+                            </div>
+
+                            <!-- Particle Physics Engine Selector (Visible in 3D Motion Mode) -->
+                            <div class="form-group" id="group-particle-selector">
+                                <label>3D Particle Physics Engine (Exact Android Parity)</label>
+                                <div class="particle-selector-grid" id="particle-selector">
+                                    <button type="button" class="particle-chip active" data-effect="SPRING_SAKURA">🌸 Sakura Petals</button>
+                                    <button type="button" class="particle-chip" data-effect="MONSOON_RAIN">🌧️ Monsoon Rain</button>
+                                    <button type="button" class="particle-chip" data-effect="THUNDER_LIGHTNING">⚡ Lightning Arc</button>
+                                    <button type="button" class="particle-chip" data-effect="WINTER_SNOW">❄️ Winter Snow</button>
+                                    <button type="button" class="particle-chip" data-effect="SUMMER_FIREFLIES">☀️ Fireflies & Sun</button>
+                                    <button type="button" class="particle-chip" data-effect="AUTUMN_LEAVES">🍁 Autumn Leaves</button>
+                                    <button type="button" class="particle-chip" data-effect="DENSE_ROLLING_FOG">🌫️ Rolling Fog</button>
+                                    <button type="button" class="particle-chip" data-effect="MYSTIC_BILLOWING_SMOKE">💨 Mystic Smoke</button>
+                                    <button type="button" class="particle-chip" data-effect="COSMIC_STARLIGHT">✨ Astral Stars</button>
+                                    <button type="button" class="particle-chip" data-effect="COSMIC_NEBULA">🌌 Cosmic Nebula</button>
+                                    <button type="button" class="particle-chip" data-effect="SAMSUNG_S3_DANDELION">🌸 Samsung S3 Dandelion</button>
+                                    <button type="button" class="particle-chip" data-effect="SAMSUNG_S4_BALLOONS">🎈 Samsung S4 Balloons</button>
+                                    <button type="button" class="particle-chip" data-effect="SONY_XPERIA_Z_FLOW">🌊 Sony Xperia Z Flow</button>
+                                    <button type="button" class="particle-chip" data-effect="SONY_ARC_MIDNIGHT">🌌 Sony Arc Midnight</button>
+                                    <button type="button" class="particle-chip" data-effect="NEXUS_PHASE_BEAM">⚡ Nexus Phase Beam</button>
+                                    <button type="button" class="particle-chip" data-effect="HTC_SENSE_CLOUDS">⛅ HTC Sense Clouds</button>
+                                </div>
+                            </div>
+
+                            <!-- Color Palette Customization -->
+                            <div class="form-group" id="group-color-tuning">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="margin-bottom: 0;">Luminous Color Palette</label>
+                                    <div style="display: flex; gap: 6px;" id="color-preset-pills">
+                                        <span class="tab-badge" style="cursor: pointer; background: rgba(0,242,254,0.2); color: var(--neon-cyan);" data-palette="cyber">Cyberpunk</span>
+                                        <span class="tab-badge" style="cursor: pointer; background: rgba(255,117,140,0.2); color: #FF758C;" data-palette="sakura">Sakura</span>
+                                        <span class="tab-badge" style="cursor: pointer; background: rgba(0,198,255,0.2); color: #00C6FF;" data-palette="monsoon">Monsoon</span>
+                                        <span class="tab-badge" style="cursor: pointer; background: rgba(255,179,0,0.2); color: var(--plasma-amber);" data-palette="golden">Golden</span>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                                    <div>
+                                        <span style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Primary Light</span>
+                                        <input type="color" id="color-primary" value="#00F2FE" class="form-input" style="height: 40px; padding: 2px;">
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Secondary Light</span>
+                                        <input type="color" id="color-secondary" value="#9D00FF" class="form-input" style="height: 40px; padding: 2px;">
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px;">Accent Glow</span>
+                                        <input type="color" id="color-accent" value="#FFFFFF" class="form-input" style="height: 40px; padding: 2px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Physics Tuning Sliders -->
+                            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; display: block;">Physics & Dynamics Tuning</label>
+                            <div class="sliders-grid">
+                                <div class="slider-box">
+                                    <div class="slider-header"><span>Velocity / Speed</span><span class="slider-val" id="val-speed">0.9x</span></div>
+                                    <input type="range" id="slider-speed" min="0.1" max="3.0" step="0.05" value="0.9">
+                                </div>
+                                <div class="slider-box" id="box-slider-density">
+                                    <div class="slider-header"><span>Particle Density</span><span class="slider-val" id="val-density">1.1x</span></div>
+                                    <input type="range" id="slider-density" min="0.2" max="3.0" step="0.05" value="1.1">
+                                </div>
+                                <div class="slider-box">
+                                    <div class="slider-header"><span>3D Gyro Parallax</span><span class="slider-val" id="val-parallax">1.2x</span></div>
+                                    <input type="range" id="slider-parallax" min="0.0" max="3.0" step="0.05" value="1.2">
+                                </div>
+                                <div class="slider-box" id="box-slider-glow">
+                                    <div class="slider-header"><span>Glow Aura & Bloom</span><span class="slider-val" id="val-glow">1.1x</span></div>
+                                    <input type="range" id="slider-glow" min="0.0" max="3.0" step="0.05" value="1.1">
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 12px; margin-top: 18px;">
+                                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                    💾 Save & Publish to Supabase Realtime DB
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="btn-reset-wp-form">
+                                    🔄 Reset Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
-            <form id="wallpaper-form" class="editor-form">
-                <!-- Basic Metadata -->
-                <div class="form-row">
-                    <div class="form-group flex-2">
-                        <label for="input-title">Wallpaper Title</label>
-                        <input type="text" id="input-title" placeholder="e.g. Monsoon Thunder Tempest" required value="Spring Sakura Blossom">
-                    </div>
-                    <div class="form-group flex-1">
-                        <label for="input-category">Category</label>
-                        <select id="input-category">
-                            <option value="SEASONS">🌸 Four Seasons</option>
-                            <option value="WEATHER">🌧️ Real Weather</option>
-                            <option value="MIST">🌫️ Fog & Smoke</option>
-                            <option value="COSMIC">🌌 Cosmic & Space</option>
-                            <option value="FLUID">💧 Fluid & Energy</option>
-                            <option value="CUSTOM">✨ Exclusive Custom</option>
-                            <option value="VIDEO">🎬 Loop Video</option>
-                            <option value="PHOTO">🖼️ Static Image</option>
-                        </select>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label for="input-content-type">Content Type</label>
-                        <select id="input-content-type">
-                            <option value="CUSTOM_PHOTO_MOTION">⚡ Particle Motion (3D Live)</option>
-                            <option value="STATIC_IMAGE">🖼️ Static Image (No Effects)</option>
-                            <option value="VIDEO_LOOP">🎬 Loop Video</option>
-                        </select>
+            <!-- Published Catalog Table -->
+            <div class="card-panel" style="margin-top: 28px;">
+                <div class="panel-header">
+                    <div class="panel-title">📚 Published Wallpapers Catalog (Realtime DB)</div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="catalog-search" placeholder="Search catalog..." class="form-input" style="max-width: 240px; padding: 8px 14px;">
+                        <button class="btn btn-secondary btn-sm" id="btn-export-catalog">📥 Export JSON</button>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="input-desc">Description</label>
-                    <input type="text" id="input-desc" placeholder="Describe the motion and atmosphere..." value="Delicate sakura cherry blossom petals fluttering gracefully with 3D wind aerodynamics.">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Engine Mode</th>
+                            <th>Dynamics</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wallpapers-table-body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB: DYNAMIC CATEGORIES MANAGER -->
+        <section id="tab-categories" class="tab-content">
+            <div style="display: grid; grid-template-columns: 380px 1fr; gap: 24px;">
+                <!-- Category Form -->
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div class="panel-title" id="category-form-title">🏷️ Add New Category Type</div>
+                        <span style="color: var(--neon-cyan); font-size: 11px; font-weight: 700; background: rgba(0,242,254,0.1); padding: 4px 10px; border-radius: 8px;" id="cat-mode-badge">CREATE</span>
+                    </div>
+
+                    <form id="form-category">
+                        <input type="hidden" id="cat-id">
+                        
+                        <div class="form-group">
+                            <label>Category Key / Slug (Uppercase)</label>
+                            <input type="text" id="cat-name" class="form-input" placeholder="e.g. ANIME, SUPERCARS, FANTASY" required style="text-transform: uppercase;">
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Used in database and matching (e.g. SEASONS, WEATHER)</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Display Name (Visible in Mobile App)</label>
+                            <input type="text" id="cat-display-name" class="form-input" placeholder="e.g. Anime & Manga, Supercars 4K" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category Icon Emoji</label>
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <input type="text" id="cat-emoji" class="form-input" placeholder="✨" value="✨" style="font-size: 20px; width: 70px; text-align: center;" maxlength="4" required>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;" id="quick-emoji-picker">
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🌸</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🌧️</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🌌</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">💧</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">📐</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">⚡</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🎌</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🏎️</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🎮</button>
+                                    <button type="button" class="btn btn-secondary btn-sm emoji-btn">🎨</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Priority Order</label>
+                                <input type="number" id="cat-priority" class="form-input" value="1" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="cat-active" class="form-select">
+                                    <option value="true">Active (Visible)</option>
+                                    <option value="false">Hidden (Draft)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 14px;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                ⚡ Save Category to Supabase
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-reset-category-form">
+                                🔄 Reset
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                <!-- Particle Physics Selection -->
-                <div class="form-group">
-                    <label>Real-World Particle Engine</label>
-                    <div class="particle-grid" id="particle-selector">
-                        <button type="button" class="particle-chip active" data-effect="SPRING_SAKURA">🌸 Spring Sakura</button>
-                        <button type="button" class="particle-chip" data-effect="SUMMER_FIREFLIES">☀️ Summer Fireflies</button>
-                        <button type="button" class="particle-chip" data-effect="AUTUMN_LEAVES">🍁 Autumn Foliage</button>
-                        <button type="button" class="particle-chip" data-effect="WINTER_SNOW">❄️ Winter Snow</button>
-                        <button type="button" class="particle-chip" data-effect="MONSOON_RAIN">🌧️ Monsoon Rain</button>
-                        <button type="button" class="particle-chip" data-effect="THUNDER_LIGHTNING">⚡ Lightning Storm</button>
-                        <button type="button" class="particle-chip" data-effect="DENSE_ROLLING_FOG">🌫️ Rolling Fog</button>
-                        <button type="button" class="particle-chip" data-effect="MYSTIC_BILLOWING_SMOKE">💨 Mystic Smoke</button>
-                        <button type="button" class="particle-chip" data-effect="COSMIC_STARLIGHT">✨ Astral Starlight</button>
-                        <button type="button" class="particle-chip" data-effect="COSMIC_NEBULA">🌌 Nebula Pulsar</button>
+                <!-- Live Categories Grid -->
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">📱 App Categories Live Feed</div>
+                        <span style="color: var(--neon-cyan); font-size: 12px;">Synced in Realtime to Android App Chip Bar</span>
+                    </div>
+
+                    <div class="categories-grid" id="categories-list-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px;">
+                        <!-- Dynamic Category Cards -->
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Background Image / Video Upload -->
-                <div class="form-group" id="section-artwork">
-                    <label>Background Artwork (Optional 3D Parallax Layer)</label>
-                    <div class="upload-dropzone" id="dropzone">
-                        <input type="file" id="input-file" accept="image/*" style="display: none;">
-                        <div class="dropzone-content">
-                            <span class="dropzone-icon">🖼️</span>
-                            <span class="dropzone-text" id="dropzone-label">Click or drag portrait artwork here</span>
-                            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
-                                <button type="button" class="btn btn-sm" id="btn-browse-file">Browse Image</button>
-                                <button type="button" class="btn btn-sm btn-danger" id="btn-remove-img" style="display: none;">Remove</button>
+        <!-- TAB 3: TRENDING BANNERS MANAGER -->
+        <section id="tab-banners" class="tab-content">
+            <div class="card-panel">
+                <div class="panel-header">
+                    <div class="panel-title">🔥 Manage Realtime Trending Banners</div>
+                    <span style="color: var(--neon-cyan); font-size: 12px;">Synced live to Mobile App Home & Discover Screen</span>
+                </div>
+
+                <form id="form-banner">
+                    <input type="hidden" id="banner-id">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Banner Main Title</label>
+                            <input type="text" id="banner-title" class="form-input" placeholder="e.g. 🌧️ Real Monsoon Rain 3D" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Badge Text</label>
+                            <input type="text" id="banner-badge" class="form-input" placeholder="e.g. HOT 🔥, POPULAR, NEW" value="TRENDING">
+                        </div>
+                        <div class="form-group">
+                            <label>Linked Wallpaper ID</label>
+                            <select id="banner-wallpaper-id" class="form-select">
+                                <option value="">None (General Highlight)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subtitle / Feature Callout</label>
+                        <input type="text" id="banner-subtitle" class="form-input" placeholder="Authentic water physics with real surface ripples & mist" required>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Gradient Start Color</label>
+                            <input type="color" id="banner-color-1" value="#00F2FE" class="form-input" style="height: 44px; padding: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label>Gradient End Color</label>
+                            <input type="color" id="banner-color-2" value="#4FACFE" class="form-input" style="height: 44px; padding: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label>Priority Rank (1 = Top)</label>
+                            <input type="number" id="banner-priority" class="form-input" min="1" max="100" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="banner-active" class="form-select">
+                                <option value="true">Active (Visible)</option>
+                                <option value="false">Hidden (Draft)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 14px;">
+                        <button type="submit" class="btn btn-primary">
+                            ⚡ Save Banner to Supabase
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="btn-reset-banner-form">
+                            🔄 Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Banners Live Preview Grid -->
+            <div class="card-panel">
+                <div class="panel-header">
+                    <div class="panel-title">📱 Live Banner Cards Preview</div>
+                </div>
+                <div class="banners-grid" id="banners-list-container">
+                    <!-- Dynamic Banner Cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: IN-APP UPDATES & OTA DEPLOYMENT -->
+        <section id="tab-updates" class="tab-content">
+            <div class="card-panel" style="max-width: 800px; margin: 0 auto;">
+                <div class="panel-header">
+                    <div class="panel-title">🚀 In-App Updates & OTA Deployment</div>
+                    <span style="color: var(--neon-cyan); font-size: 12px;">Pushes updates to users without app rebuilds</span>
+                </div>
+
+                <form id="form-app-update">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Latest Version Code (Build)</label>
+                            <input type="number" id="up-version-code" class="form-input" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Latest Version Name</label>
+                            <input type="text" id="up-version-name" class="form-input" value="1.0.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Required Version Code</label>
+                            <input type="number" id="up-min-code" class="form-input" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Force Update (Mandatory Modal)</label>
+                            <select id="up-force" class="form-select">
+                                <option value="false">No (Optional Update Dialog)</option>
+                                <option value="true">Yes (Mandatory Blocking Screen)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Update Dialog Title</label>
+                        <input type="text" id="up-title" class="form-input" value="Lively Engine v1.0.0 Available!">
+                    </div>
+
+                    <div class="form-group">
+                        <label>APK / Release Download Direct URL</label>
+                        <input type="url" id="up-download-url" class="form-input" value="https://github.com/StrawHatsStudios/lively-engine-wallpapers/releases/latest" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Release Notes & Changelog (Markdown)</label>
+                        <textarea id="up-changelog" class="form-textarea" style="min-height: 120px;">• Real-time cloud sync with Supabase
+• New 3D motion physics engine
+• Support for static photo and video loops
+• Performance optimizations and 60 FPS battery efficiency</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px;">
+                        🚀 Broadcast In-App Update to All Users
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 5: BROADCAST NOTIFICATIONS BROADCASTER -->
+        <section id="tab-notifications" class="tab-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Notification Composer -->
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">🔔 Compose Broadcast In-App Alert</div>
+                    </div>
+
+                    <form id="form-notification">
+                        <div class="form-group">
+                            <label>Badge Category</label>
+                            <select id="notif-category" class="form-select">
+                                <option value="ANNOUNCEMENT">📢 Announcement</option>
+                                <option value="WALLPAPER">🎨 New Wallpaper Drop</option>
+                                <option value="UPDATE">🚀 Engine Update</option>
+                                <option value="PROMO">🎁 Studio Promo</option>
+                                <option value="ALERT">⚠️ Important Notice</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notification Title</label>
+                            <input type="text" id="notif-title" class="form-input" placeholder="e.g. 🌸 Spring Sakura Drops!" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message Body</label>
+                            <textarea id="notif-body" class="form-textarea" placeholder="Write message to send to all mobile users..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Action URL (Optional Link)</label>
+                            <input type="url" id="notif-action-url" class="form-input" placeholder="https://...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Target Wallpaper ID (Optional auto-open)</label>
+                            <select id="notif-wallpaper-id" class="form-select">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                            🔔 Broadcast Notification Instantly
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Notification History -->
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">📋 Sent Broadcasts History</div>
+                    </div>
+                    <div id="notifications-history-list" style="display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto;">
+                        <!-- Dynamic Notification Items -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: STUDIO & DEV INFO CONFIG -->
+        <section id="tab-devinfo" class="tab-content">
+            <div class="card-panel" style="max-width: 800px; margin: 0 auto;">
+                <div class="panel-header">
+                    <div class="panel-title">👥 Studio & Dev Info Configuration</div>
+                    <span style="color: var(--neon-cyan); font-size: 12px;">Syncs live to the App's "Dev Info" bottom nav tab</span>
+                </div>
+
+                <form id="form-devinfo">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Studio Name</label>
+                            <input type="text" id="dev-studio-name" class="form-input" value="StrawHats Studios" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Package ID</label>
+                            <input type="text" id="dev-package-id" class="form-input" value="ss.lively.engine" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Studio Mission Tagline</label>
+                        <input type="text" id="dev-tagline" class="form-input" value="Crafting Next-Gen 3D Interactive & Physics Wallpapers">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Studio Announcement Banner</label>
+                        <textarea id="dev-announcement" class="form-textarea">Welcome to Lively Engine! Enjoy real-time 3D motion wallpapers created by StrawHats Studios.</textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input type="email" id="dev-email" class="form-input" value="strawhats.studios@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Website URL</label>
+                            <input type="url" id="dev-website" class="form-input" value="https://strawhats.studios.dev">
+                        </div>
+                        <div class="form-group">
+                            <label>GitHub Repository</label>
+                            <input type="url" id="dev-github" class="form-input" value="https://github.com/StrawHatsStudios">
+                        </div>
+                        <div class="form-group">
+                            <label>Telegram Community</label>
+                            <input type="url" id="dev-telegram" class="form-input" value="https://t.me/StrawHatsStudios">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px;">
+                        💾 Save Dev Info to Supabase Realtime DB
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB: GITHUB CLOUD SYNC & BACKEND MANAGER -->
+        <section id="tab-github-setup" class="tab-content">
+            <div class="card-panel" style="margin-bottom: 20px;">
+                <div class="panel-header">
+                    <div class="panel-title">🐙 GitHub Cloud Realtime Backend & API Sync</div>
+                    <span class="tab-badge" style="background: rgba(0,242,254,0.15); color: var(--neon-cyan); font-weight: 700;">PRIMARY BACKEND</span>
+                </div>
+
+                <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
+                    Lively Engine uses GitHub as its primary cloud database and content delivery network (CDN).
+                    When you publish updates, the admin panel automatically packages all wallpapers, custom particle effect codes, trending banners, and in-app updates into <code>catalog.json</code> and commits directly to your GitHub repository using GitHub's REST API.
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <div>
+                        <h4 style="color: var(--neon-cyan); margin-bottom: 12px;">⚙️ Repository & Authentication Settings</h4>
+                        
+                        <div class="form-group">
+                            <label>GitHub Repository (owner/repo)</label>
+                            <input type="text" id="gh-repo" class="form-input" value="abirvai001/Lively-Engine" placeholder="e.g. StrawHatsStudios/Lively-Engine">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="form-group">
+                                <label>Target Branch</label>
+                                <input type="text" id="gh-branch" class="form-input" value="main" placeholder="main">
+                            </div>
+                            <div class="form-group">
+                                <label>Catalog File Path</label>
+                                <input type="text" id="gh-path" class="form-input" value="catalog.json" placeholder="catalog.json">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>GitHub Personal Access Token (PAT)</label>
+                            <input type="password" id="gh-token" class="form-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                                Required for pushing commits. Create a classic token with <code>repo</code> scope at <a href="https://github.com/settings/tokens" target="_blank" style="color: var(--neon-cyan); font-weight: 700;">github.com/settings/tokens</a>.
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 14px;">
+                            <button type="button" class="btn btn-secondary" id="btn-gh-test" style="flex: 1;">
+                                🔍 Test Connection
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btn-gh-save-config" style="flex: 1;">
+                                💾 Save Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="color: var(--neon-cyan); margin-bottom: 12px;">🚀 1-Click Cloud Deployment & Export</h4>
+
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button type="button" class="btn btn-primary" id="btn-gh-sync-all" style="padding: 14px; font-size: 14px;">
+                                🚀 1-Click Sync & Commit Entire Database to GitHub
+                            </button>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <button type="button" class="btn btn-secondary" id="btn-gh-download-catalog">
+                                    📥 Download catalog.json
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="btn-gh-download-effects">
+                                    📥 Download effects.json
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Live Status & Activity Box -->
+                        <div style="margin-top: 18px; background: #0A0F1A; border: 1px solid rgba(0,242,254,0.25); border-radius: 12px; padding: 14px;">
+                            <div style="font-size: 12px; font-weight: 700; color: #FFF; margin-bottom: 6px; display: flex; justify-content: space-between;">
+                                <span>📡 Cloud Connection Status</span>
+                                <span id="gh-status-indicator" style="color: var(--plasma-amber);">Ready to Sync</span>
+                            </div>
+                            <div id="gh-status-details" style="font-size: 11px; color: var(--text-secondary); line-height: 1.6; font-family: monospace;">
+                                • Target: https://raw.githubusercontent.com/abirvai001/Lively-Engine/main/catalog.json<br>
+                                • Ready to package 14+ wallpapers, retro Android classics & dynamic effects.
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top: 8px;">
-                        <input type="url" id="input-image-url" class="form-input" placeholder="Or paste direct image URL (e.g. https://.../wallpaper.jpg)">
-                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: SUPABASE FREE TIER SETUP & SQL WIZARD (LEGACY FALLBACK) -->
+        <section id="tab-setup" class="tab-content">
+            <div class="card-panel">
+                <div class="panel-header">
+                    <div class="panel-title">⚡ Supabase Realtime DB Free Tier Setup (0 Costs Forever)</div>
                 </div>
 
-                <!-- Video Upload Section -->
-                <div class="form-group" id="section-video" style="display: none;">
-                    <label>Loop Video Source</label>
-                    <div class="upload-dropzone" id="dropzone-video" style="cursor: pointer;">
-                        <input type="file" id="input-video-file" accept="video/*" style="display: none;">
-                        <div class="dropzone-content">
-                            <span class="dropzone-icon">🎬</span>
-                            <span class="dropzone-text" id="dropzone-video-label">Click to pick a video file (MP4, WebM)</span>
-                            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
-                                <button type="button" class="btn btn-sm" id="btn-browse-video">Browse Video</button>
-                                <button type="button" class="btn btn-sm btn-danger" id="btn-remove-video" style="display: none;">Remove</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <div>
+                        <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">📋 Step-by-Step 100% Free Setup</h4>
+                        <ol style="color: var(--text-secondary); font-size: 13px; line-height: 1.8; padding-left: 20px;">
+                            <li>Sign up for free at <a href="https://supabase.com" target="_blank" style="color: var(--neon-cyan); font-weight: 700;">supabase.com</a>.</li>
+                            <li>Create a new free project (e.g. <code>LivelyEngine</code>).</li>
+                            <li>In the left sidebar, click <strong>SQL Editor</strong> &gt; <strong>New Query</strong>.</li>
+                            <li>Paste the SQL script shown on the right and click <strong>RUN</strong>.</li>
+                            <li>Go to <strong>Project Settings &gt; API</strong> and copy:
+                                <ul>
+                                    <li><strong>Project URL</strong> (e.g. <code>https://xxxx.supabase.co</code>)</li>
+                                    <li><strong>Project API Key (anon/public)</strong></li>
+                                </ul>
+                            </li>
+                            <li>Paste your credentials below and click <strong>Save & Test Connection</strong>!</li>
+                        </ol>
+
+                        <div style="margin-top: 24px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 18px; border: 1px solid var(--border-glass);">
+                            <h4 style="color: #FFF; font-size: 14px; margin-bottom: 12px;">🔑 Connect Supabase Project</h4>
+                            <div class="form-group">
+                                <label>Supabase Project URL</label>
+                                <input type="text" id="sb-config-url" class="form-input" placeholder="https://your-project.supabase.co">
+                            </div>
+                            <div class="form-group">
+                                <label>Supabase Anon / Service API Key</label>
+                                <input type="password" id="sb-config-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn btn-primary" id="btn-save-sb-config" style="flex: 1;">
+                                    💾 Save Credentials
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="btn-test-sb-conn">
+                                    🔄 Test Connection
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top: 8px;">
-                        <input type="url" id="input-video-url" class="form-input" placeholder="Or paste direct video URL (e.g. https://.../loop.mp4)">
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 11px; margin-top: 6px;">⚠️ For GitHub deployment, use a direct hosted URL (CDN, GitHub raw, etc.). Large Base64 videos may exceed GitHub file limits.</p>
-                </div>
 
-                <!-- Physics Tuning -->
-                <div class="physics-grid">
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>Flow Speed</span>
-                            <span class="val-label" id="val-speed">0.9x</span>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="color: var(--neon-cyan);">💾 SQL Database Migration Script</h4>
+                            <button class="btn btn-secondary btn-sm" id="btn-copy-sql">📋 Copy SQL Script</button>
                         </div>
-                        <input type="range" id="input-speed" min="0.4" max="2.5" step="0.05" value="0.9">
-                    </div>
+                        <div class="code-box" id="sql-code-snippet" style="max-height: 480px;">
+-- 1. Wallpapers Table
+create table if not exists public.wallpapers (
+    id text primary key,
+    title text not null,
+    category text not null default 'SEASONS',
+    type text not null default 'CUSTOM_PHOTO_MOTION',
+    author text default 'StrawHats Studios',
+    description text default '',
+    tags text[] default array['3D', 'Live', 'Motion'],
+    fps int default 60,
+    resolution text default '4K HDR',
+    video_uri_string text,
+    photo_uri_string text,
+    data jsonb not null default '{}'::jsonb,
+    created_at timestamptz default now() not null
+);
 
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>Particle Density</span>
-                            <span class="val-label" id="val-density">1.1x</span>
-                        </div>
-                        <input type="range" id="input-density" min="0.4" max="2.0" step="0.05" value="1.1">
-                    </div>
+-- Ensure all columns exist even if the table was created earlier
+alter table public.wallpapers add column if not exists author text default 'StrawHats Studios';
+alter table public.wallpapers add column if not exists description text default '';
+alter table public.wallpapers add column if not exists tags text[] default array['3D', 'Live', 'Motion'];
+alter table public.wallpapers add column if not exists fps int default 60;
+alter table public.wallpapers add column if not exists resolution text default '4K HDR';
+alter table public.wallpapers add column if not exists video_uri_string text;
+alter table public.wallpapers add column if not exists photo_uri_string text;
+alter table public.wallpapers add column if not exists data jsonb not null default '{}'::jsonb;
+alter table public.wallpapers add column if not exists created_at timestamptz default now();
 
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>3D Gyro Parallax</span>
-                            <span class="val-label" id="val-parallax">1.2x</span>
-                        </div>
-                        <input type="range" id="input-parallax" min="0.5" max="2.5" step="0.05" value="1.2">
-                    </div>
+-- 2. Trending & Hero Banners Table
+create table if not exists public.banners (
+    id text primary key,
+    title text not null,
+    subtitle text not null default '',
+    badge text not null default 'TRENDING',
+    wallpaper_id text references public.wallpapers(id) on delete set null,
+    banner_image_url text,
+    gradient_colors bigint[] default array[4278252286, 4283416318],
+    priority int default 1,
+    is_active boolean default true,
+    created_at timestamptz default now() not null
+);
 
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>Glow Aura</span>
-                            <span class="val-label" id="val-glow">1.1x</span>
+alter table public.banners add column if not exists banner_image_url text;
+alter table public.banners add column if not exists gradient_colors bigint[] default array[4278252286, 4283416318];
+alter table public.banners add column if not exists priority int default 1;
+alter table public.banners add column if not exists is_active boolean default true;
+alter table public.banners add column if not exists created_at timestamptz default now();
+
+-- 3. In-App Updates Table
+create table if not exists public.app_updates (
+    id text primary key default 'latest_release',
+    latest_version_code int not null default 1,
+    latest_version_name text not null default '1.0.0',
+    min_required_version_code int not null default 1,
+    force_update boolean not null default false,
+    title text not null default 'Update Available',
+    changelog text not null default '• Real-time cloud sync with Supabase
+• New 3D motion physics engine
+• Performance optimizations and bug fixes',
+    download_url text not null default 'https://github.com/StrawHatsStudios/lively-engine-wallpapers/releases/latest',
+    release_date text not null default '2026-08-24',
+    updated_at timestamptz default now() not null
+);
+
+alter table public.app_updates add column if not exists latest_version_code int default 1;
+alter table public.app_updates add column if not exists latest_version_name text default '1.0.0';
+alter table public.app_updates add column if not exists min_required_version_code int default 1;
+alter table public.app_updates add column if not exists force_update boolean default false;
+alter table public.app_updates add column if not exists title text default 'Update Available';
+alter table public.app_updates add column if not exists changelog text default '';
+alter table public.app_updates add column if not exists download_url text default '';
+alter table public.app_updates add column if not exists release_date text default '2026-08-24';
+alter table public.app_updates add column if not exists updated_at timestamptz default now();
+
+-- 4. Broadcast Notifications Table
+create table if not exists public.notifications (
+    id text primary key,
+    title text not null,
+    body text not null,
+    category text not null default 'ANNOUNCEMENT',
+    action_url text,
+    wallpaper_id text references public.wallpapers(id) on delete set null,
+    image_url text,
+    timestamp bigint not null,
+    created_at timestamptz default now() not null
+);
+
+alter table public.notifications add column if not exists action_url text;
+alter table public.notifications add column if not exists wallpaper_id text references public.wallpapers(id) on delete set null;
+alter table public.notifications add column if not exists image_url text;
+alter table public.notifications add column if not exists timestamp bigint default extract(epoch from now()) * 1000;
+alter table public.notifications add column if not exists created_at timestamptz default now();
+
+-- 5. Developer & Studio Info Table
+create table if not exists public.dev_info (
+    id text primary key default 'studio_info',
+    studio_name text not null default 'StrawHats Studios',
+    tagline text not null default 'Crafting Next-Gen 3D Interactive & Physics Wallpapers',
+    email text not null default 'strawhats.studios@gmail.com',
+    website text not null default 'https://strawhats.studios.dev',
+    github text not null default 'https://github.com/StrawHatsStudios',
+    telegram text not null default 'https://t.me/StrawHatsStudios',
+    discord text not null default 'https://discord.gg/strawhats',
+    app_version text not null default '1.0.0 (Release)',
+    package_id text not null default 'ss.lively.engine',
+    announcement text not null default 'Welcome to Lively Engine! Enjoy real-time 3D motion wallpapers created by StrawHats Studios.',
+    updated_at timestamptz default now() not null
+);
+
+alter table public.dev_info add column if not exists studio_name text default 'StrawHats Studios';
+alter table public.dev_info add column if not exists tagline text default 'Crafting Next-Gen 3D Interactive & Physics Wallpapers';
+alter table public.dev_info add column if not exists email text default 'strawhats.studios@gmail.com';
+alter table public.dev_info add column if not exists website text default 'https://strawhats.studios.dev';
+alter table public.dev_info add column if not exists github text default 'https://github.com/StrawHatsStudios';
+alter table public.dev_info add column if not exists telegram text default 'https://t.me/StrawHatsStudios';
+alter table public.dev_info add column if not exists discord text default 'https://discord.gg/strawhats';
+alter table public.dev_info add column if not exists app_version text default '1.0.0 (Release)';
+alter table public.dev_info add column if not exists package_id text default 'ss.lively.engine';
+alter table public.dev_info add column if not exists announcement text default 'Welcome to Lively Engine!';
+alter table public.dev_info add column if not exists updated_at timestamptz default now();
+
+-- Enable Row Level Security (RLS)
+alter table public.wallpapers enable row level security;
+alter table public.banners enable row level security;
+alter table public.app_updates enable row level security;
+alter table public.notifications enable row level security;
+alter table public.dev_info enable row level security;
+
+-- Drop existing policies
+drop policy if exists "Public Read Wallpapers" on public.wallpapers;
+drop policy if exists "Admin All Wallpapers" on public.wallpapers;
+drop policy if exists "Allow all operations on wallpapers" on public.wallpapers;
+
+drop policy if exists "Public Read Banners" on public.banners;
+drop policy if exists "Admin All Banners" on public.banners;
+drop policy if exists "Allow all operations on banners" on public.banners;
+
+drop policy if exists "Public Read Updates" on public.app_updates;
+drop policy if exists "Admin All Updates" on public.app_updates;
+drop policy if exists "Allow all operations on app_updates" on public.app_updates;
+
+drop policy if exists "Public Read Notifications" on public.notifications;
+drop policy if exists "Admin All Notifications" on public.notifications;
+drop policy if exists "Allow all operations on notifications" on public.notifications;
+
+drop policy if exists "Public Read DevInfo" on public.dev_info;
+drop policy if exists "Admin All DevInfo" on public.dev_info;
+drop policy if exists "Allow all operations on dev_info" on public.dev_info;
+
+-- Full-Access Policies with WITH CHECK
+create policy "Allow all operations on wallpapers" on public.wallpapers for all using (true) with check (true);
+create policy "Allow all operations on banners" on public.banners for all using (true) with check (true);
+create policy "Allow all operations on app_updates" on public.app_updates for all using (true) with check (true);
+create policy "Allow all operations on notifications" on public.notifications for all using (true) with check (true);
+create policy "Allow all operations on dev_info" on public.dev_info for all using (true) with check (true);
+
+-- Enable Realtime for all tables safely
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'wallpapers'
+  ) then
+    alter publication supabase_realtime add table public.wallpapers;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'banners'
+  ) then
+    alter publication supabase_realtime add table public.banners;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'app_updates'
+  ) then
+    alter publication supabase_realtime add table public.app_updates;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'notifications'
+  ) then
+    alter publication supabase_realtime add table public.notifications;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'dev_info'
+  ) then
+    alter publication supabase_realtime add table public.dev_info;
+  end if;
+end $$;
+
+-- Seed Default Records
+insert into public.app_updates (id, latest_version_code, latest_version_name, min_required_version_code, force_update, title, changelog, download_url, release_date)
+values ('latest_release', 1, '1.0.0', 1, false, 'Lively Engine v1.0.0', 'Initial public release by StrawHats Studios with 3D live physics and Supabase cloud sync.', 'https://github.com/StrawHatsStudios/lively-engine-wallpapers/releases', '2026-08-24')
+on conflict (id) do update set
+  latest_version_code = excluded.latest_version_code,
+  latest_version_name = excluded.latest_version_name,
+  title = excluded.title;
+
+insert into public.dev_info (id, studio_name, tagline, email, website, github, telegram, discord, app_version, package_id, announcement)
+values ('studio_info', 'StrawHats Studios', 'Crafting Next-Gen 3D Interactive & Physics Wallpapers', 'strawhats.studios@gmail.com', 'https://strawhats.studios.dev', 'https://github.com/StrawHatsStudios', 'https://t.me/StrawHatsStudios', 'https://discord.gg/strawhats', '1.0.0 (Release)', 'ss.lively.engine', 'Welcome to Lively Engine! Enjoy real-time 3D motion wallpapers created by StrawHats Studios.')
+on conflict (id) do update set
+  studio_name = excluded.studio_name,
+  tagline = excluded.tagline;
+
+-- Reload Supabase PostgREST schema cache immediately
+notify pgrst, 'reload schema';
                         </div>
-                        <input type="range" id="input-glow" min="0.5" max="2.0" step="0.05" value="1.1">
                     </div>
                 </div>
-
-                <!-- Color Palette -->
-                <div class="colors-row">
-                    <div class="color-picker-group">
-                        <label>Primary Glow</label>
-                        <input type="color" id="input-color-pri" value="#FFB7C5">
-                    </div>
-                    <div class="color-picker-group">
-                        <label>Secondary</label>
-                        <input type="color" id="input-color-sec" value="#FF8DA1">
-                    </div>
-                    <div class="color-picker-group">
-                        <label>Accent Aura</label>
-                        <input type="color" id="input-color-acc" value="#FF4081">
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary flex-1" id="btn-save-preset">
-                        💾 Save to Catalog
-                    </button>
-                    <button type="button" class="btn btn-secondary" id="btn-export-single">
-                        📤 Export .motion File
-                    </button>
-                    <button type="button" class="btn btn-outline" id="btn-reset-form">
-                        🔄 Reset
-                    </button>
-                </div>
-            </form>
+            </div>
         </section>
     </main>
-
-    <!-- Preset Catalog Library Table -->
-    <section class="catalog-section">
-        <div class="catalog-header">
-            <div class="section-title">
-                <h2>📚 Published Wallpapers Catalog</h2>
-                <p>Manage, preview, edit, or batch deploy wallpapers to Lively Engine.</p>
-            </div>
-            <div class="catalog-controls">
-                <input type="text" id="catalog-search" placeholder="Search catalog..." class="search-input">
-                <button class="btn btn-secondary" id="btn-push-cloud">⚡ Push to Cloud DB</button>
-            </div>
-        </div>
-
-        <div class="catalog-table-container">
-            <table class="catalog-table">
-                <thead>
-                    <tr>
-                        <th>Preview</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Effect Engine</th>
-                        <th>Speed / Density</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="catalog-table-body">
-                    <!-- Dynamic Rows Populated by admin.js -->
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Cloud Database Configuration Modal -->
-    <div class="modal-backdrop" id="modal-cloud-config" style="display: none;">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>⚡ Cloud Database Configuration (Free Tier)</h3>
-                <button class="btn-close" id="btn-close-cloud-modal">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Database Provider</label>
-                    <select id="cloud-provider">
-                        <option value="github">GitHub RAW Repository (Recommended, 100% Free)</option>
-                        <option value="supabase">Supabase Free Tier (PostgreSQL / REST)</option>
-                        <option value="jsonbin">JSONBin.io Free Storage</option>
-                    </select>
-                </div>
-
-                <div id="config-fields-github">
-                    <div class="form-group">
-                        <label>GitHub Repository (e.g. <code>StrawHatsStudios/lively-engine-wallpapers</code>)</label>
-                        <input type="text" id="gh-repo" placeholder="owner/repo">
-                    </div>
-                    <div class="form-group">
-                        <label>Branch & File Path</label>
-                        <input type="text" id="gh-path" value="main/catalog.json">
-                    </div>
-                    <div class="form-group">
-                        <label>GitHub Personal Access Token (for 1-click publishing)</label>
-                        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
-                    </div>
-                </div>
-
-                <div id="config-fields-supabase" style="display: none;">
-                    <div class="form-group">
-                        <label>Supabase Project URL</label>
-                        <input type="text" id="sb-url" placeholder="https://xyzcompany.supabase.co">
-                    </div>
-                    <div class="form-group">
-                        <label>Supabase Anon / Service Key</label>
-                        <input type="password" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-save-cloud-config">Save Credentials</button>
-                <button class="btn btn-primary" id="btn-sync-now">⚡ Sync Catalog to Cloud Now</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Free Tier Setup Modal -->
-    <div class="modal-backdrop" id="modal-free-tier" style="display: none;">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>📖 Step-by-Step Free Database Setup Guide</h3>
-                <button class="btn-close" id="btn-close-modal">✕</button>
-            </div>
-            <div class="modal-body">
-                <h4>🚀 Recommended: GitHub Free Database (Zero Setup)</h4>
-                <ol>
-                    <li>Click <strong>"Download catalog.json"</strong> on the top bar.</li>
-                    <li>Create a free public repository on GitHub (e.g. <code>https://github.com/StrawHatsStudios/lively-engine-wallpapers</code>).</li>
-                    <li>Upload <code>catalog.json</code> to the root of the repo.</li>
-                    <li>Click <strong>"Raw"</strong> on GitHub to copy your direct URL:
-                        <br><code>https://raw.githubusercontent.com/StrawHatsStudios/lively-engine-wallpapers/main/catalog.json</code>
-                    </li>
-                    <li>In the <strong>Lively Engine App</strong>, tap <strong>Cloud Sync</strong>, paste this URL, and all users will get live wallpaper updates automatically!</li>
-                </ol>
-
-                <h4>⚡ Supabase Database Setup (Free SQL Table)</h4>
-                <p>If you prefer a real-time relational database:</p>
-                <ol>
-                    <li>Create a free project at <a href="https://supabase.com" target="_blank" style="color:var(--neon-cyan)">supabase.com</a>.</li>
-                    <li>Open the <strong>SQL Editor</strong> in Supabase and run:
-                        <br><code>CREATE TABLE wallpapers (id TEXT PRIMARY KEY, title TEXT, category TEXT, data JSONB);</code>
-                    </li>
-                    <li>Enter your Project URL & Anon Key in the <strong>"Cloud Database Sync"</strong> modal to sync with 1 click.</li>
-                </ol>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="btn-modal-ok">Got it!</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hidden Input for JSON Import -->
-    <input type="file" id="import-json-file" accept=".json,.motion" style="display: none;">
 
     <script src="admin.js"></script>
 </body>
