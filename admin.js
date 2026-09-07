@@ -6,7 +6,7 @@
 // Global State
 const state = {
     // GitHub Cloud Backend (Primary)
-    githubRepo: localStorage.getItem('lively_gh_repo') || 'abirvai001/Lively-Engine',
+    githubRepo: localStorage.getItem('lively_gh_repo') || 'abirvai001/lively-engine-admin',
     githubBranch: localStorage.getItem('lively_gh_branch') || 'main',
     githubPath: localStorage.getItem('lively_gh_path') || 'catalog.json',
     githubToken: localStorage.getItem('lively_gh_token') || '',
@@ -51,7 +51,7 @@ const state = {
         force_update: false,
         title: 'Lively Engine v1.0.0',
         changelog: '• GitHub Cloud Realtime Backend with zero server costs\n• Dynamic Particle & Effect Code Studio\n• Old Android Popular Wallpapers (Samsung S3/S4, Sony Xperia Z/Arc, Nexus Phase Beam, HTC Sense)\n• 60 FPS 3D Gyro Physics Engine',
-        download_url: 'https://github.com/abirvai001/Lively-Engine/releases/latest',
+        download_url: 'https://github.com/abirvai001/lively-engine-admin/releases/latest',
         release_date: '2026-09-07'
     },
     notifications: [],
@@ -81,7 +81,7 @@ const state = {
 const DEFAULT_CATEGORIES = [
     { id: 'cat_all', name: 'ALL', display_name: 'All Wallpapers', icon_emoji: '✨', priority: 0, is_active: true },
     { id: 'cat_builtin', name: 'BUILT_IN', display_name: 'Built-in Live', icon_emoji: '⚡', priority: 1, is_active: true },
-    { id: 'cat_classics', name: 'CLASSICS', display_name: 'Retro Android Legends', icon_emoji: '📱', priority: 2, is_active: true },
+    { id: 'cat_classics', name: 'CLASSICS', display_name: 'Old Wallpapers', icon_emoji: '📱', priority: 2, is_active: true },
     { id: 'cat_anime', name: 'ANIME', display_name: 'Anime & Manga', icon_emoji: '🎌', priority: 3, is_active: true },
     { id: 'cat_cars', name: 'CARS', display_name: 'Supercars 4K', icon_emoji: '🏎️', priority: 4, is_active: true },
     { id: 'cat_cyberpunk', name: 'CYBERPUNK', display_name: 'Cyberpunk & Neon', icon_emoji: '🌆', priority: 5, is_active: true },
@@ -3556,7 +3556,7 @@ function initGitHubBackendManager() {
     const pathInput = document.getElementById('gh-path');
     const tokenInput = document.getElementById('gh-token');
 
-    if (repoInput) repoInput.value = state.githubRepo || 'abirvai001/Lively-Engine';
+    if (repoInput) repoInput.value = state.githubRepo || 'abirvai001/lively-engine-admin';
     if (branchInput) branchInput.value = state.githubBranch || 'main';
     if (pathInput) pathInput.value = state.githubPath || 'catalog.json';
     if (tokenInput) tokenInput.value = state.githubToken || '';
@@ -3609,7 +3609,7 @@ function updateGitHubStatusDisplay() {
     const details = document.getElementById('gh-status-details');
     if (!details) return;
 
-    const rawUrl = `https://raw.githubusercontent.com/${state.githubRepo || 'abirvai001/Lively-Engine'}/${state.githubBranch || 'main'}/${state.githubPath || 'catalog.json'}`;
+    const rawUrl = `https://raw.githubusercontent.com/${state.githubRepo || 'abirvai001/lively-engine-admin'}/${state.githubBranch || 'main'}/${state.githubPath || 'catalog.json'}`;
     const wpCount = state.wallpapers?.length || 0;
     const fxCount = state.customEffects?.length || 0;
 
@@ -3627,7 +3627,7 @@ async function testGitHubConnection() {
     const details = document.getElementById('gh-status-details');
 
     if (!repo || !repo.includes('/')) {
-        alert('Please enter a valid GitHub repository in "owner/repo" format (e.g. abirvai001/Lively-Engine).');
+        alert('Please enter a valid GitHub repository in "owner/repo" format (e.g. abirvai001/lively-engine-admin).');
         return;
     }
 

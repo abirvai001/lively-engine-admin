@@ -22,7 +22,7 @@
     {
       "id": "cat_classics",
       "name": "CLASSICS",
-      "display_name": "Retro Android Legends",
+      "display_name": "Old Wallpapers",
       "icon_emoji": "📱",
       "priority": 2,
       "is_active": true
@@ -389,7 +389,7 @@
       "force_update": false,
       "title": "Lively Engine v1.0.0",
       "changelog": "• GitHub Cloud Realtime Backend with zero server costs\n• Dynamic Particle & Effect Code Studio\n• Old Android Popular Wallpapers (Samsung S3/S4, Sony Xperia Z/Arc, Nexus Phase Beam, HTC Sense)\n• 60 FPS 3D Gyro Physics Engine",
-      "download_url": "https://github.com/abirvai001/Lively-Engine/releases/latest",
+      "download_url": "https://github.com/abirvai001/lively-engine-admin/releases/latest",
       "release_date": "2026-09-07"
     }
   ],
